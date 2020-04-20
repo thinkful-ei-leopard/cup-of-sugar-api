@@ -24,7 +24,9 @@ postsRouter
         const { type, title, comments, description } = req.body
         const user_id = req.user.id
         const zip = req.user.zip
-        const newPost = { user_id, zip, type, title, comments, description }
+        const user_name = req.user.name
+        const user_userName = req.user.userName
+        const newPost = { user_id, user_name, user_userName, zip, type, title, comments, description }
         if(!type) {
             return res
                 .status(400)

@@ -22,8 +22,10 @@ commentsRouter
     })
     .post(async (req, res, next) => {
         const { content } = req.body
-        let post_id = req.params.post_id
-        let newComment = { post_id, content }
+        const post_id = req.params.post_id
+        const user_name = req.user.name
+        const user_userName = req.user.userName
+        const newComment = { user_name, user_userName, post_id, content }
         if (content.length > 500) {
             return res
                 .status(400)
