@@ -8,49 +8,69 @@ const jsonBodyParser = express.json()
 
 usersRouter
     .route('/')
-    .get((req, res, next) => {
-        UsersService.getAllUsers(req.app.get('db'))
-            .then(users => {
-                res
-                    .status(200)
-                    .json(users)
-            })
-            .catch(next)
-    })
-
-    .post(jsonBodyParser, (req, res, next) => {
-        const { name, password, admin } = req.body
-        const newUser = { name, password, admin }
-
-        if(!newUser) {
+    .get(async (req, res, next) => {
+        try {
+        const allUsers = await UsersService.getAllUsers(req.app.get('db'))
             return res
-                .status(400)
-                .json({ error: {message: 'User required'}})
+                .status(200)
+                .json(allUsers)
         }
-
-        if(!name || !password) {
-            return res 
-                .status(400)
-                .json({ error: {message: 'Name and password required'}})
-        }
-        UsersService.insertUser(req.app.get('db'), newUser)
-            .then(user => {
-                res
-                    .status(201)
-                    .location(path.posix.join(req.originalUrl, `/${user.id}`))
-                    .json(user)
-            })
+        catch {next}
     })
+
+    userRouter
+  .post('/', jsonBodyParser, async (req, res, next) => {
+    const { password, username, name } = req.body
+
+    for (const field of ['name', 'username', 'password'])
+      if (!req.body[field])
+        return res.status(400).json({
+          error: `Missing '${field}' in request body`
+        })
+
+    try {
+      const passwordError = UserService.validatePassword(password)
+
+      if (passwordError)
+        return res.status(400).json({ error: passwordError })
+
+      const hasUserWithUserName = await UserService.hasUserWithUserName(
+        req.app.get('db'),
+        username
+      )
+
+      if (hasUserWithUserName)
+        return res.status(400).json({ error: `Username already taken` })
+
+      const hashedPassword = await  UserService.hashPassword(password)
+
+      const newUser = {
+        username,
+        password: hashedPassword,
+        name,
+      }
+
+      const user = await UserService.insertUser(
+        req.app.get('db'),
+        newUser
+      )
+
+      res
+        .status(201)
+        .location(path.posix.join(req.originalUrl, `/${user.id}`))
+        .json(UserService.serializeUser(user))
+    } catch(error) {
+      next(error)
+    }
+  })
 
 usersRouter
     .route('/user')
-    .get(requireAuth, (req, res, next) => {
-        UsersService.getById(req.app.get('db'), req.user.id)
-        .then(user => {
-            res
+    .get(requireAuth, async (req, res, next) => {
+        const user = await UsersService.getById(req.app.get('db'), req.user.id)
+            return res
                 .status(200)
                 .json(user)
-        })
     })
 
 module.exports = usersRouter;
