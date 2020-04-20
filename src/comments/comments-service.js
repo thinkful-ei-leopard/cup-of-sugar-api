@@ -23,3 +23,5 @@ const CommentsService = {
             .delete()
     },
 }
+
+module.exports = CommentsService

@@ -9,20 +9,18 @@ const jsonBodyParser = express.json()
 postsRouter
     .route('/')
     .get(requireAuth, (req, res, next) => {
-        PostsService.getPostsByZip(req.app.get('db'), req.user.zip)
-            .then(posts => {
+        const posts = await PostsService.getPostsByZip(req.app.get('db'), req.user.zip)
                 if(!posts) {
                     res
                         .status(404)
-                        .send('No posts found')
+                        .send({ error: {message: 'No posts found'}})
                 }
                 res
                     .status(200)
                     .json(posts)
-            })
             .catch(next)
     })
-    .post(requireAuth, jsonBodyParser, (req, res, next) => {
+    .post(requireAuth, jsonBodyParser, async (req, res, next) => {
         const { type, title, comments, description } = req.body
         const user_id = req.user.id
         const zip = req.user.zip
@@ -52,20 +50,21 @@ postsRouter
                 .status(400)
                 .json({error: {message: 'Title must not exceed 60 characters'}})
         }
-        PostsService.insertPost(req.app.get('db'), newPost) 
-            .then(post => {
-                res
-                    .status(201)
-                    .location(path.posix.join(req.originalUrl, `${post.id}`))
-                    .json(post)
-            })
+        try {
+        const post = await PostsService.insertPost(req.app.get('db'), newPost) 
+            res
+                .status(201)
+                .location(path.posix.join(req.originalUrl, `${post.id}`))
+                .json(post)
+        }
+        catch{next}
     })
 
 postsRouter
     .route('/:post_id')
-    .delete(requireAuth, (req, res, next) => {
-        PostsService.deletePost(req.app.get('db'), req.params.post_id)
-            .then(post => {
+    .delete(requireAuth, async (req, res, next) => {
+        try {
+        const post = await PostsService.deletePost(req.app.get('db'), req.params.post_id)
                 if(!post) {
                     return res.status(404).json({
                         error: {message: 'Post does not exist'}
@@ -74,6 +73,6 @@ postsRouter
                 res
                     .status(204)
                     .end()
-            })
-            .catch(next)
+        }
+        catch{next}
     })
