@@ -20,7 +20,7 @@ usersRouter
 
     userRouter
   .post('/', jsonBodyParser, async (req, res, next) => {
-    const { password, username, name } = req.body
+    const { password, username, name, email, zip } = req.body
 
     for (const field of ['name', 'username', 'password'])
       if (!req.body[field])
@@ -48,6 +48,8 @@ usersRouter
         username,
         password: hashedPassword,
         name,
+        email, 
+        zip
       }
 
       const user = await UserService.insertUser(
