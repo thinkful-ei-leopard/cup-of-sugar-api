@@ -7,8 +7,8 @@ TRUNCATE
 
 INSERT INTO "users" ("id", "name", "username", "password", "email", "zip", "admin")
 VALUES
-  (1, 'admin', 'admin', 'pass', 'admin@admin.com', 00999, true) --password = pass
-  (2, 'daniel', 'daniel', 'pass', 'daniel@daniel.com', 00999, false); --password = pass
+  (1, 'admin', 'admin', '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG', 'admin@admin.com', 00999, true) --password = pass
+  (2, 'daniel', 'daniel', '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG', 'daniel@daniel.com', 00999, false); --password = pass
 
 INSERT INTO "posts" ("id", "user_id", "user_name", "user_userName", "type", "title", "zip", "comments", "description")
 VALUES
