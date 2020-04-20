@@ -5,6 +5,13 @@ const PostsService = {
             .select('*');
     },
 
+    getPostsByZip(db, zip) {
+        return db
+            .from('posts as post')
+            .where('post.zip', zip)
+            .select('*')
+    },
+
     getById(db, id) {
         return db
             .from('posts as post')
