@@ -5,10 +5,10 @@ TRUNCATE
   "posts",
   "users";
 
-INSERT INTO "users" ("id", "first_name", "last_name", "user_name", "password", "email", "zip", "admin_status")
+INSERT INTO "users" ("id", "name", "user_name", "password", "email", "zip", "admin_status")
 VALUES
-  (1, 'admin', '1', 'admin1', '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG', 'admin@admin.com', 00999, 'true'), --password = pass
-  (2, 'daniel','1', 'daniel', '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG', 'daniel@daniel.com', 00999, 'false'); --password = pass
+  (1, 'admin1', 'admin1', '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG', 'admin@admin.com', 00999, 'true'), --password = pass
+  (2, 'daniel1', 'daniel', '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG', 'daniel@daniel.com', 00999, 'false'); --password = pass
 
 
 INSERT INTO "posts" ("id", "user_id", "type", "title", "description") 
