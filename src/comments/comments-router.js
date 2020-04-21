@@ -8,7 +8,7 @@ const jsonBodyParser = express.json()
 
 commentsRouter
     .route('/')
-    .get(requireAuth, async (req, res, next) => {
+    .get(async (req, res, next) => {
         try {
             const comments = await CommentsService.getAllComments(req.app.get('db'))
             if (!comments) {
@@ -67,3 +67,5 @@ commentsRouter
         }
         catch{next}
     })
+
+module.exports = commentsRouter

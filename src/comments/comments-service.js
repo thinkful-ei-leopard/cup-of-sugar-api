@@ -1,8 +1,8 @@
 const CommentsService = {
     getAllComments(db) {
         return db
-            .from('comments')
-            .innerJoin('users', 'users.id', '=', 'comments.user_id')
+            .from('users')
+            .innerJoin('comments', 'comments.user_id', '=', 'users.id')
             .select('*')
     },
     getCommentsByPostId(db, id) {
