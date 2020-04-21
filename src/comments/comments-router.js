@@ -7,6 +7,21 @@ const commentsRouter = express.Router()
 const jsonBodyParser = express.json()
 
 commentsRouter
+    .route('/')
+    .get(requireAuth, async (req, res, next) => {
+        try {
+            const comments = await CommentsService.getAllComments(req.app.get('db'))
+            if (!comments) {
+                return res.status(404).send('No comments found')
+            }
+            res
+                .status(200)
+                .json(comments)
+        }
+        catch{next}
+    })
+
+commentsRouter
     .route('/post_id') 
     .get(requireAuth, async (req, res, next) => {
         try {
