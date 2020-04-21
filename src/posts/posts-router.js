@@ -16,7 +16,7 @@ postsRouter
     if (!posts) {
       res.status(404).send({ error: { message: 'No posts found' } });
     }
-    res.status(200).json(posts).catch(next);
+    res.status(200).json(posts);
   })
   .post(requireAuth, jsonBodyParser, async (req, res, next) => {
     const { type, title, comments, description } = req.body;

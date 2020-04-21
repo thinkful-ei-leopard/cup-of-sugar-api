@@ -1,14 +1,16 @@
 const PostsService = {
     getAllPosts(db) {
         return db
-            .from('posts')
+            .from('users')
+            .innerJoin('posts', 'users.id', 'posts.user_id')
             .select('*');
     },
 
     getPostsByZip(db, zip) {
         return db
-            .from('posts as post')
-            .where('post.zip', zip)
+            .from('users')
+            .innerJoin('posts', 'users.id', 'posts.user_id')
+            .where('users.zip', zip)
             .select('*')
     },
 
