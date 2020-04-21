@@ -8,7 +8,7 @@ const jsonBodyParser = express.json()
 
 commentsRouter
     .route('/post_id') 
-    .get(async (req, res, next) => {
+    .get(requireAuth, async (req, res, next) => {
         try {
             const comments = await CommentsService.getCommentsByPostId(req.app.get('db'), req.params.post_id)
                 if (!comments) {
@@ -20,7 +20,7 @@ commentsRouter
         }
         catch{next}
     })
-    .post(async (req, res, next) => {
+    .post(requireAuth, async (req, res, next) => {
         const { content } = req.body
         const post_id = req.params.post_id
         const user_name = req.user.name
@@ -43,7 +43,7 @@ commentsRouter
 
 commentsRouter
     .route('/comment/comment_id')
-    .delete(async (req, res, next) => {
+    .delete(requireAuth, async (req, res, next) => {
         try {
             await CommentsService.deleteComment(req.app.get('db'), req.params.comment_id)
                 res
