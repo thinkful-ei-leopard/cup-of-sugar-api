@@ -35,15 +35,82 @@ function makeUsersArray() {
 
 function makePostsArray() {
     return [
-
+        {
+          id: 1,
+          user_id: 1,
+          date_modified: new Date(),
+          type: 'request',
+          title: 'testing 1 2',
+          description: 'its a test descrition'
+        },
+        {
+            id: 3,
+            user_id: 1,
+            date_modified: new Date(),
+            type: 'offer',
+            title: 'testing 1 2 3',
+            description: 'its a descrition'
+        },
+        {
+            id: 3,
+            user_id: 2,
+            date_modified: new Date(),
+            type: 'request',
+            title: 'testing 1 2 12 12',
+            description: 'its a test'
+        },
     ]
 }
 
 function makeCommentsArray() {
     return [
-
+        {
+            id: 1,
+            user_id: 1,
+            post_id: 1,
+            date_modified: new Date(),
+            content: 'test content'
+        },
+        {
+            id: 2,
+            user_id: 1,
+            post_id: 2,
+            date_modified: new Date(),
+            content: 'test 2 content'
+        },
+        {
+            id: 3,
+            user_id: 2,
+            post_id: 1,
+            date_modified: new Date(),
+            content: 'test 3 content'
+        },
+        {
+            id: 4,
+            user_id: 2,
+            post_id: 3,
+            date_modified: new Date(),
+            content: 'test 4 content'
+        },
     ]
 }
+
+function seedCupOfSugarTables(db, users, games, players=[], scores=[], pig=[] ) {
+    return db.transaction(async trx => {
+      await seedUsers(trx, users)
+      await trx.into('posts').insert(posts)
+      await trx.raw(
+        `SELECT setval('posts_id_seq', ?)`,
+        [posts[posts.length - 1].id],
+      )
+      if(comments.length) {
+        await trx.into('comments').insert(comments)
+        await trx.raw(
+          `SELECT setval('comments_id_seq', ?)`,
+          [comments[comments.length - 1].id],
+      )}
+    })
+  }
 
 function cleanTables(db) {
     return db.raw(
@@ -78,13 +145,22 @@ function seedUsers(db, users) {
 
 function makeExpectedPost(post) {
     return {
-
+        id: post.id,
+        user_id: post.user_id,
+        date_modified: post.date_modified,
+        type: post.type,
+        title: post.title,
+        description: post.description
     }
 }
 
 function makeExpectedComment(comment) {
     return {
-
+        id: comment.id,
+        user_id: comment.user_id,
+        post_id: comment.post_id,
+        date_modified: post.date_modified,
+        content: post.content
     }
 }
 
@@ -104,5 +180,6 @@ module.exports = {
     makePostsArray,
     makeCommentsArray,
     makeCupOfSugarFixtures,
-    cleanTables
+    cleanTables,
+    makeAuthHeader
 }
