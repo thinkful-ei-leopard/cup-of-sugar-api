@@ -18,23 +18,23 @@ usersRouter
         catch {next}
     })
 
-    userRouter
+  usersRouter
   .post('/', jsonBodyParser, async (req, res, next) => {
     const { password, username, name, email, zip } = req.body
 
-    for (const field of ['name', 'username', 'password'])
+    for (const field of ['name', 'username', 'password', 'email', 'zip'])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`
         })
 
     try {
-      const passwordError = UserService.validatePassword(password)
+      const passwordError = UsersService.validatePassword(password)
 
       if (passwordError)
         return res.status(400).json({ error: passwordError })
 
-      const hasUserWithUserName = await UserService.hasUserWithUserName(
+      const hasUserWithUserName = await UsersService.hasUserWithUserName(
         req.app.get('db'),
         username
       )
@@ -42,17 +42,18 @@ usersRouter
       if (hasUserWithUserName)
         return res.status(400).json({ error: `Username already taken` })
 
-      const hashedPassword = await  UserService.hashPassword(password)
+      const hashedPassword = await  UsersService.hashPassword(password)
 
       const newUser = {
-        username,
+        user_name: username,
         password: hashedPassword,
         name,
         email, 
-        zip
+        zip,
+        admin_status: false
       }
 
-      const user = await UserService.insertUser(
+      const user = await UsersService.insertUser(
         req.app.get('db'),
         newUser
       )
@@ -60,7 +61,7 @@ usersRouter
       res
         .status(201)
         .location(path.posix.join(req.originalUrl, `/${user.id}`))
-        .json(UserService.serializeUser(user))
+        .json(UsersService.serializeUser(user))
     } catch(error) {
       next(error)
     }
