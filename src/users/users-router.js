@@ -27,6 +27,11 @@ usersRouter
         return res.status(400).json({
           error: `Missing '${field}' in request body`
         })
+    if(zip.length !== 5) {
+      return res.status(400).json({
+        error: 'Zip code must be 5 digits'
+      })
+    }
 
     try {
       const passwordError = UsersService.validatePassword(password)
