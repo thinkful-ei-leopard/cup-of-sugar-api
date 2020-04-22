@@ -22,10 +22,13 @@ commentsRouter
     })
 
 commentsRouter
-    .route('/post_id') 
+    .route('/:post_id') 
     .get(requireAuth, async (req, res, next) => {
         try {
-            const comments = await CommentsService.getCommentsByPostId(req.app.get('db'), req.params.post_id)
+            const comments = await CommentsService.getCommentsByPostId(
+                req.app.get('db'), 
+                req.params.post_id
+            )
                 if (!comments) {
                     return res.status(404).send('No comments found')
                 }
@@ -57,13 +60,17 @@ commentsRouter
     })
 
 commentsRouter
-    .route('/comment/comment_id')
+    .route('/comment/:comment_id')
     .delete(requireAuth, async (req, res, next) => {
         try {
-            await CommentsService.deleteComment(req.app.get('db'), req.params.comment_id)
-                res
-                    .status(204)
-                    .end()
+            await CommentsService.deleteComment(
+                req.app.get('db'), 
+                req.params.comment_id
+            )
+            
+            res
+                .status(204)
+                .end()
         }
         catch{next}
     })
