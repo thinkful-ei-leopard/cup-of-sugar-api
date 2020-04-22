@@ -1,4 +1,10 @@
 const CommentsService = {
+    getCommentById(db, id) {
+        return db
+        .from('comments')
+        .where('comments.id', id)
+        .select('*')
+    },
     getAllComments(db) {
         return db
             .from('users')
