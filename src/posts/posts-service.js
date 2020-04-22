@@ -8,17 +8,10 @@ const PostsService = {
 
     getPostsByZip(db, zip) {
         return db
-            .from('users')
-            .innerJoin('posts', 'users.id', 'posts.user_id')
-            .where('users.zip', zip)
-    },
-
-    getCommentsByZip(db, zip) {
-        return db
             .from('users as user')
             .where('user.zip', zip)
             .innerJoin('posts', 'posts.user_id', '=', 'user.id')
-            .select('*')
+            .select("posts.id", "user.name", "user.user_name", "user.zip", "posts.user_id", "posts.date_modified", "posts.type", "posts.title", "posts.description", "posts.comments")
     },
 
     getById(db, id) {

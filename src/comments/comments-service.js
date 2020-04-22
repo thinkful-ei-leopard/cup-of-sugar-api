@@ -10,7 +10,7 @@ const CommentsService = {
             .from('users as user')
             .where('user.zip', zip)
             .innerJoin('comments', 'comments.user_id', '=', 'user.id')
-            .select('*')
+            .select("comments.id", "user.name", "user.user_name", "user.zip", "comments.user_id", "comments.post_id", "comments.date_modified", "comments.content")
     },
     getCommentsByPostId(db, id) {
         return db
