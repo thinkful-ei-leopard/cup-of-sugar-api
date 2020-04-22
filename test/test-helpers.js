@@ -181,5 +181,6 @@ module.exports = {
     makeCommentsArray,
     makeCupOfSugarFixtures,
     cleanTables,
-    makeAuthHeader
+    makeAuthHeader,
+    seedCupOfSugarTables
 }

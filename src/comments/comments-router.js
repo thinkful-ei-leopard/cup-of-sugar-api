@@ -10,7 +10,7 @@ commentsRouter
     .route('/')
     .get(async (req, res, next) => {
         try {
-            const comments = await CommentsService.getAllComments(req.app.get('db'))
+            const comments = await CommentsService.getCommentsByZip(req.app.get('db'), req.user.zip)
             if (!comments) {
                 return res.status(404).send('No comments found')
             }
