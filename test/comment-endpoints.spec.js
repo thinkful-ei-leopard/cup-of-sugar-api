@@ -116,7 +116,7 @@ describe('Comments Endpoints', function () {
                 .expect(201)
                 .expect(res => {
                     expect(res.body).to.have.property('id')
-                    expect(res.body.content).to.eql(newGame.content)
+                    expect(res.body.content).to.eql(newPost.content)
                     expect(res.body).to.have.property('post_id')
                     expect(res.body).to.have.property('date_modified')
                     expect(res.body).to.have.property('user_id')
@@ -124,7 +124,7 @@ describe('Comments Endpoints', function () {
             })
         })
     })
-    describe('GET /api/:post_id', () => {
+    describe('GET /api/comments/:post_id', () => {
         context('Given no comments', () => {
             before('insert users and posts', () => {
                 helpers.seedCupOfSugarTables(
@@ -155,7 +155,7 @@ describe('Comments Endpoints', function () {
                 const expectedComment2 = helpers.makeExpectedComment(testComments[2])
                 const expectedArr = [expectedComment1, expectedComment2]
                 return supertest(app)
-                    .get(`/api/games/${testComments[0].post_id}`)
+                    .get(`/api/comments/${testComments[0].post_id}`)
                     .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
                     .expect(200, expectedArr)
             })
