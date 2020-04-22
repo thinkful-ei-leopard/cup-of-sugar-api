@@ -14,19 +14,27 @@ const CommentsService = {
     },
     getCommentsByPostId(db, id) {
         return db
-            .from('comments as comment')
-            .where('comment.post_id', id)
-            .select('*')
+            .from('users')
+            .innerJoin('comments', 'comments.user_id', '=', 'users.id')
+            .where('comments.post_id', id)
+            .select("comments.id", "users.name", "users.user_name", "users.zip", "comments.user_id", "comments.post_id", "comments.date_modified", "comments.content")
     },
 
-    insertComment(db, newPost) {
+    insertComment(db, newComment) {
         return db
-            .insert(newPost)
+            .insert(newComment)
             .into('comments')
             .returning('*')
             .then(rows => {
                 return rows[0]
             })
+    },
+
+    incrementPostCommentsCount(db, postId) {
+        return db
+            .from('posts')
+            .where('id', postId)
+            .increment('comments', 1)
     },
 
     deleteComment(db, id) {

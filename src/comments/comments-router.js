@@ -38,12 +38,11 @@ commentsRouter
         }
         catch{next}
     })
-    .post(requireAuth, async (req, res, next) => {
-        const { content } = req.body
+    .post(requireAuth, jsonBodyParser, async (req, res, next) => {
+        const { content } = req.body;
         const post_id = req.params.post_id
-        const user_name = req.user.name
-        const user_userName = req.user.userName
-        const newComment = { user_name, user_userName, post_id, content }
+        const user_id = req.user.id
+        const newComment = { user_id, post_id, content }
         if (content.length > 500) {
             return res
                 .status(400)
@@ -51,12 +50,18 @@ commentsRouter
         }
         try {
             const comment = await CommentsService.insertComment(req.app.get('db'), newComment)
+            await CommentsService.incrementPostCommentsCount(
+                req.app.get('db'), 
+                req.params.post_id
+            )
                 res
                     .status(201)
                     .location(path.posix.join(req.originalUrl, `${comment.id}`))
                     .json(comment)
         }
-        catch{next}
+        catch(error) {
+
+        }
     })
 
 commentsRouter
