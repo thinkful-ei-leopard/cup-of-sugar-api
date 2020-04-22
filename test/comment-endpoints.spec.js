@@ -24,8 +24,8 @@ describe('Comments Endpoints', function () {
 
     afterEach('cleanup', () => helpers.cleanTables(db))
 
-    describe('Protected endpoints', () => {
-        this.beforeEach('Insert Comments', () => {
+    describe.only('Protected endpoints', () => {
+        beforeEach('Insert Comments', () => {
             helpers.makeCupOfSugarFixtures(
                 db,
                 testUsers,
