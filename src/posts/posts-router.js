@@ -19,19 +19,12 @@ postsRouter
     res.status(200).json(posts);
   })
   .post(requireAuth, jsonBodyParser, async (req, res, next) => {
-    const { type, title, comments, description } = req.body;
+    const { type, title, description } = req.body;
     const user_id = req.user.id;
-    const zip = req.user.zip;
-    const user_name = req.user.name;
-    const user_userName = req.user.userName;
     const newPost = {
       user_id,
-      user_name,
-      user_userName,
-      zip,
       type,
       title,
-      comments,
       description,
     };
     if (!type) {
@@ -58,12 +51,15 @@ postsRouter
         .json({ error: { message: 'Title must not exceed 60 characters' } });
     }
     try {
-      const post = await PostsService.insertPost(req.app.get('db'), newPost);
+      const post = await PostsService.insertPost(
+        req.app.get('db'), 
+        newPost
+      );
       res
         .status(201)
         .location(path.posix.join(req.originalUrl, `${post.id}`))
         .json(post);
-    } catch {
+    } catch (error) {
       next;
     }
   });
