@@ -11,12 +11,12 @@ VALUES
   (2, 'daniel1', 'daniel', '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG', 'daniel@daniel.com', 00999, 'false'); --password = pass
 
 
-INSERT INTO "posts" ("id", "user_id", "type", "title", "description") 
+INSERT INTO "posts" ("id", "user_id", "type", "title", "description", "comments") 
 VALUES
-  (1, 1, 'request', 'Somebody please get me some toilet paper', 'It has been so hard to get tp since the quarantine'),
-  (2, 1, 'offer', 'Homemade masks available', 'Together we can stop the spread!'),
-  (3, 2, 'request', 'Anyone have flour?', 'Just need 3 cups of flour for the latest baking project please help'),
-  (4, 2, 'offer', 'Grocery store runs on Tuesdays', 'To anyone not feeling safe during these times going to the grocery store, I will be making runs on Tuesdays and will happily pick up some items for you.');
+  (1, 1, 'request', 'Somebody please get me some toilet paper', 'It has been so hard to get tp since the quarantine', 2),
+  (2, 1, 'offer', 'Homemade masks available', 'Together we can stop the spread!', 0),
+  (3, 2, 'request', 'Anyone have flour?', 'Just need 3 cups of flour for the latest baking project please help', 1),
+  (4, 2, 'offer', 'Grocery store runs on Tuesdays', 'To anyone not feeling safe during these times going to the grocery store, I will be making runs on Tuesdays and will happily pick up some items for you.', 0);
 
 INSERT INTO "comments" ("id", "user_id", "post_id", "content")
 VALUES 

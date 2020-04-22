@@ -4,5 +4,6 @@ CREATE TABLE posts (
     date_modified TIMESTAMPTZ DEFAULT now() NOT NULL,
     type TEXT NOT NULL,
     title TEXT NOT NULL,
-    description TEXT NOT NULL
+    description TEXT NOT NULL,
+    comments INTEGER NOT NULL DEFAULT 0
 );
