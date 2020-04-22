@@ -41,7 +41,8 @@ function makePostsArray() {
           date_modified: "2020-04-22T15:07:04.118Z",
           type: 'request',
           title: 'testing 1 2',
-          description: 'its a test descrition'
+          description: 'its a test descrition',
+          comments: 0
         },
         {
             id: 2,
@@ -49,7 +50,8 @@ function makePostsArray() {
             date_modified: "2020-04-22T15:07:04.118Z",
             type: 'offer',
             title: 'testing 1 2 3',
-            description: 'its a description'
+            description: 'its a description',
+            comments: 0
         },
         {
             id: 3,
@@ -57,7 +59,8 @@ function makePostsArray() {
             date_modified: "2020-04-22T15:07:04.118Z",
             type: 'request',
             title: 'testing 1 2 12 12',
-            description: 'its a test'
+            description: 'its a test',
+            comments: 0
         },
     ]
 }
@@ -153,7 +156,8 @@ function makeExpectedPost(post, user) {
         date_modified: post.date_modified,
         type: post.type,
         title: post.title,
-        description: post.description
+        description: post.description,
+        comments: post.comments
     }
 }
 
