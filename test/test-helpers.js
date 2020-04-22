@@ -38,23 +38,23 @@ function makePostsArray() {
         {
           id: 1,
           user_id: 1,
-          date_modified: new Date(),
+          date_modified: "2020-04-22T15:07:04.118Z",
           type: 'request',
           title: 'testing 1 2',
           description: 'its a test descrition'
         },
         {
-            id: 3,
+            id: 2,
             user_id: 1,
-            date_modified: new Date(),
+            date_modified: "2020-04-22T15:07:04.118Z",
             type: 'offer',
             title: 'testing 1 2 3',
-            description: 'its a descrition'
+            description: 'its a description'
         },
         {
             id: 3,
             user_id: 2,
-            date_modified: new Date(),
+            date_modified: "2020-04-22T15:07:04.118Z",
             type: 'request',
             title: 'testing 1 2 12 12',
             description: 'its a test'
@@ -68,28 +68,28 @@ function makeCommentsArray() {
             id: 1,
             user_id: 1,
             post_id: 1,
-            date_modified: new Date(),
+            date_modified: "2020-04-22T15:07:04.118Z",
             content: 'test content'
         },
         {
             id: 2,
             user_id: 1,
             post_id: 2,
-            date_modified: new Date(),
+            date_modified: "2020-04-22T15:07:04.118Z",
             content: 'test 2 content'
         },
         {
             id: 3,
             user_id: 2,
             post_id: 1,
-            date_modified: new Date(),
+            date_modified: "2020-04-22T15:07:04.118Z",
             content: 'test 3 content'
         },
         {
             id: 4,
             user_id: 2,
             post_id: 3,
-            date_modified: new Date(),
+            date_modified: "2020-04-22T15:07:04.118Z",
             content: 'test 4 content'
         },
     ]
