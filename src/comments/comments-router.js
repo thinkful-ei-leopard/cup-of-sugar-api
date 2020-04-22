@@ -29,7 +29,6 @@ commentsRouter
                 req.app.get('db'), 
                 req.params.post_id
             )
-            console.log(comments.length)
                 if (comments.length === 0) {
                     return res.status(404).send('No comments found')
                 }
@@ -41,6 +40,9 @@ commentsRouter
     })
     .post(requireAuth, jsonBodyParser, async (req, res, next) => {
         const { content } = req.body;
+        if(!content) {
+            return res.status(400).send('No comment content')
+        }
         const post_id = req.params.post_id
         const user_id = req.user.id
         const newComment = { user_id, post_id, content }
@@ -71,7 +73,7 @@ commentsRouter
         CommentsService.getCommentById(req.app.get('db'), req.params.comment_id)
         .then(comment => {
             console.log(comment)
-            if(!comment) {
+            if(comment.length === 0) {
                 return res.status(404).send('Comment not found')
             }
         })
