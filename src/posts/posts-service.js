@@ -6,11 +6,11 @@ const PostsService = {
             .select('*');
     },
 
-    getPostsByZip(db, zip) {
+    getCommentsByZip(db, zip) {
         return db
-            .from('users')
-            .innerJoin('posts', 'users.id', 'posts.user_id')
-            .where('users.zip', zip)
+            .from('users as user')
+            .where('user.zip', zip)
+            .innerJoin('posts', 'posts.user_id', '=', 'user.id')
             .select('*')
     },
 

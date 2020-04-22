@@ -5,6 +5,13 @@ const CommentsService = {
             .innerJoin('comments', 'comments.user_id', '=', 'users.id')
             .select('*')
     },
+    getCommentsByZip(db, zip) {
+        return db
+            .from('users as user')
+            .where('user.zip', zip)
+            .innerJoin('comments', 'comments.user_id', '=', 'user.id')
+            .select('*')
+    },
     getCommentsByPostId(db, id) {
         return db
             .from('comments as comment')
