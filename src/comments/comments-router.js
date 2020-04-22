@@ -8,7 +8,7 @@ const jsonBodyParser = express.json()
 
 commentsRouter
     .route('/')
-    .get(async (req, res, next) => {
+    .get(requireAuth, async (req, res, next) => {
         try {
             const comments = await CommentsService.getCommentsByZip(req.app.get('db'), req.user.zip)
             if (!comments) {
@@ -63,10 +63,15 @@ commentsRouter
     .route('/comment/:comment_id')
     .delete(requireAuth, async (req, res, next) => {
         try {
-            await CommentsService.deleteComment(
+            let comment= await CommentsService.deleteComment(
                 req.app.get('db'), 
                 req.params.comment_id
             )
+            if(!comment) {
+                return res.status(404).json({
+                    error: {message: 'Comment does not exist'}
+                })
+            }
             
             res
                 .status(204)

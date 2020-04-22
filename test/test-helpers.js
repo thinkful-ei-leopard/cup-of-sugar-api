@@ -10,7 +10,7 @@ function makeUsersArray() {
             password: 'password',
             email: 'test@test.com',
             zip: 31254,
-            admin: true
+            admin_status: true
         },
         {
             id: 2,
@@ -19,7 +19,7 @@ function makeUsersArray() {
             password: 'pw',
             email: 'test@test.com',
             zip: 31254,
-            admin: false
+            admin_status: false
         },
         {
             id: 3,
@@ -28,7 +28,7 @@ function makeUsersArray() {
             password: 'insecure',
             email: 'test@test.com',
             zip: 31254,
-            admin: false
+            admin_status: false
         },
     ]
 }
@@ -159,8 +159,8 @@ function makeExpectedComment(comment) {
         id: comment.id,
         user_id: comment.user_id,
         post_id: comment.post_id,
-        date_modified: post.date_modified,
-        content: post.content
+        date_modified: comment.date_modified,
+        content: comment.content
     }
 }
 
