@@ -95,7 +95,7 @@ function makeCommentsArray() {
     ]
 }
 
-function seedCupOfSugarTables(db, users, games, players=[], scores=[], pig=[] ) {
+function seedCupOfSugarTables(db, users, posts = [], comments = []) {
     return db.transaction(async trx => {
       await seedUsers(trx, users)
       await trx.into('posts').insert(posts)
