@@ -143,9 +143,12 @@ function seedUsers(db, users) {
       )
   }
 
-function makeExpectedPost(post) {
+function makeExpectedPost(post, user) {
     return {
         id: post.id,
+        name: user.name,
+        user_name: user.user_name,
+        zip: user.zip,
         user_id: post.user_id,
         date_modified: post.date_modified,
         type: post.type,
@@ -154,9 +157,17 @@ function makeExpectedPost(post) {
     }
 }
 
-function makeExpectedComment(comment) {
+function getUserForItem(item, userArr) {
+    let user = userArr.find(user => user.id === item.user_id)
+    return user
+}
+
+function makeExpectedComment(comment, user) {
     return {
         id: comment.id,
+        name: user.name,
+        user_name: user.user_name,
+        zip: user.zip,
         user_id: comment.user_id,
         post_id: comment.post_id,
         date_modified: comment.date_modified,
@@ -182,5 +193,6 @@ module.exports = {
     makeCupOfSugarFixtures,
     cleanTables,
     makeAuthHeader,
-    seedCupOfSugarTables
+    seedCupOfSugarTables,
+    getUserForItem
 }

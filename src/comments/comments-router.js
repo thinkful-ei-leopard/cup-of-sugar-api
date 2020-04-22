@@ -8,9 +8,9 @@ const jsonBodyParser = express.json()
 
 commentsRouter
     .route('/')
-    .get(async (req, res, next) => {
+    .get(requireAuth, async (req, res, next) => {
         try {
-            const comments = await CommentsService.getCommentsByZip(req.app.get('db'), 999)
+            const comments = await CommentsService.getCommentsByZip(req.app.get('db'), req.user.zip)
             if (!comments) {
                 return res.status(404).send('No comments found')
             }
@@ -29,13 +29,14 @@ commentsRouter
                 req.app.get('db'), 
                 req.params.post_id
             )
-                if (!comments) {
+            console.log(comments.length)
+                if (comments.length === 0) {
                     return res.status(404).send('No comments found')
                 }
-                res
-                    .status(200)
-                    .json(comments)
-        }
+                else { res
+                        .status(200)
+                        .json(comments)
+        }}
         catch{next}
     })
     .post(requireAuth, jsonBodyParser, async (req, res, next) => {
@@ -67,14 +68,15 @@ commentsRouter
 commentsRouter
     .route('/comment/:comment_id')
     .delete(requireAuth, (req, res, next) => {
+        CommentsService.getCommentById(req.app.get('db'), req.params.comment_id)
+        .then(comment => {
+            console.log(comment)
+            if(!comment) {
+                return res.status(404).send('Comment not found')
+            }
+        })
         CommentsService.deleteComment(req.app.get('db'), req.params.comment_id)
             .then(comment => {
-                console.log(comment)
-                if(!comment) {
-                    return res.status(404).json({
-                        error: {message: 'Comment does not exist'}
-                    })
-                }
                 res
                 .status(204)
                 .end()

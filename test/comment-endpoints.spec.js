@@ -152,8 +152,10 @@ describe('Comments Endpoints', function () {
                 )
             })
             it('responds with 200 and test comment', () => {
-                const expectedComment1 = helpers.makeExpectedComment(testComments[0])
-                const expectedComment2 = helpers.makeExpectedComment(testComments[2])
+                const user1 = testUsers.find(user => user.id === testComments[0].user_id)
+                const user2 = testUsers.find(user => user.id === testComments[2].user_id)
+                const expectedComment1 = helpers.makeExpectedComment(testComments[0], user1)
+                const expectedComment2 = helpers.makeExpectedComment(testComments[2], user2)
                 const expectedArr = [expectedComment1, expectedComment2]
                 return supertest(app)
                     .get(`/api/comments/${testComments[0].post_id}`)
@@ -220,7 +222,7 @@ describe('Comments Endpoints', function () {
             )
             it('responds with 200 and all of the comments from user zip code', () => {
               const expectedComments = testComments.map(comment =>
-                helpers.makeExpectedComment(comment)
+                helpers.makeExpectedComment(comment, helpers.getUserForItem(comment, testUsers))
               )
               return supertest(app)
                 .get('/api/comments')
