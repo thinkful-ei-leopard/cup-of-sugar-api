@@ -101,11 +101,12 @@ function makeCommentsArray() {
 function seedCupOfSugarTables(db, users, posts = [], comments = []) {
     return db.transaction(async trx => {
       await seedUsers(trx, users)
-      await trx.into('posts').insert(posts)
-      await trx.raw(
-        `SELECT setval('posts_id_seq', ?)`,
-        [posts[posts.length - 1].id],
-      )
+      await seedPosts(trx, posts)
+    //   await trx.into('posts').insert(posts)
+    //   await trx.raw(
+    //     `SELECT setval('posts_id_seq', ?)`,
+    //     [posts[posts.length - 1].id],
+    //   )
       if(comments.length) {
         await trx.into('comments').insert(comments)
         await trx.raw(
@@ -116,6 +117,7 @@ function seedCupOfSugarTables(db, users, posts = [], comments = []) {
   }
 
 function cleanTables(db) {
+    console.log('cleaning')
     return db.raw(
         `TRUNCATE
             users,
@@ -132,7 +134,19 @@ function makeCupOfSugarFixtures() {
     return { testUsers, testPosts, testComments }
 }
 
+function seedPosts(db, posts) {
+    console.log('seeding posts')
+    return db.into('posts').insert(posts)
+      .then(() =>
+        db.raw(
+          `SELECT setval('posts_id_seq', ?)`,
+          [posts[posts.length - 1].id],
+        )
+      )
+  }
+
 function seedUsers(db, users) {
+    console.log('seeding users')
     const preppedUsers = users.map(user => ({
       ...user,
       password: bcrypt.hashSync(user.password, 1)
@@ -184,7 +198,7 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
         subject: user.name,
         algorithm: 'HS256',
       })
-    console.log(token)
+      console.log(token)
     return `Bearer ${token}`
 }
 

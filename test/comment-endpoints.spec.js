@@ -3,7 +3,7 @@ const app = require('../src/app')
 const helpers = require('./test-helpers')
 require('dotenv').config()
 
-describe('Comments Endpoints', function () {
+describe.only('Comments Endpoints', function () {
     let db
     const {
         testUsers,
@@ -125,7 +125,7 @@ describe('Comments Endpoints', function () {
             })
         })
     })
-    describe('GET /api/comments/:post_id', () => {
+    describe.only('GET /api/comments/:post_id', () => {
         context('Given no comments', () => {
             before('insert users and posts', () => {
                 helpers.seedCupOfSugarTables(
@@ -142,7 +142,8 @@ describe('Comments Endpoints', function () {
             })
         })
         context('Given comments exist', () => {
-            beforeEach('insert all', () => {
+            before('cleanup', () => helpers.cleanTables(db))
+            before('insert all', () => {
                 helpers.seedCupOfSugarTables(
                     db,
                     testUsers,

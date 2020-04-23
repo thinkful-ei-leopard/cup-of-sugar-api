@@ -61,7 +61,9 @@ postsRouter
     }
   });
 
-postsRouter.route('/:post_id').delete(requireAuth, async (req, res, next) => {
+postsRouter
+  .route('/:post_id')
+  .delete(requireAuth, async (req, res, next) => {
   try {
     const post = await PostsService.deletePost(
       req.app.get('db'),
@@ -73,7 +75,7 @@ postsRouter.route('/:post_id').delete(requireAuth, async (req, res, next) => {
       });
     }
     res.status(204).end();
-  } catch {
+  } catch(error) {
     next;
   }
 });

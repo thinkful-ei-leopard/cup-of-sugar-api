@@ -3,7 +3,7 @@ const app = require('../src/app')
 const helpers = require('./test-helpers')
 require('dotenv').config()
 
-describe.only('Posts Endpoints', function () {
+describe('Posts Endpoints', function () {
     let db
     const {
         testUsers,
@@ -19,13 +19,13 @@ describe.only('Posts Endpoints', function () {
         app.set('db', db)
     })
     after('disconnect from db', () => db.destroy())
-
+//not test issue data issue, check clean methods etc
     before('cleanup', () => helpers.cleanTables(db))
 
-    afterEach('cleanup', () => helpers.cleanTables(db))
+    // afterEach('cleanup', () => helpers.cleanTables(db))
 
     describe('Protected endpoints', () => {
-        this.beforeEach('Insert Posts', () => {
+        beforeEach('Make Posts', () => {
             helpers.makeCupOfSugarFixtures(
                 db,
                 testUsers,
@@ -64,8 +64,50 @@ describe.only('Posts Endpoints', function () {
             })
         })
     })
+    describe('DELETE /api/posts/:post_id', () => {
+        context(`Given no post`, () => {
+            before('clean tables', () => 
+            helpers.cleanTables(db)
+            )
+            before('insert users', () =>
+              helpers.seedUsers(
+                db,
+                testUsers
+              )
+            )
+            it(`responds with 404 not found`, () => {
+                return supertest(app)
+                .delete('/api/posts/1')
+                .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
+                .expect(404)
+            })
+        })
+        context('Given the post exists', () => {
+            // console.log(testPosts)
+            before('clean tables', () => 
+            helpers.cleanTables(db)
+            )
+            beforeEach('insert posts', () => {
+              helpers.seedCupOfSugarTables(
+                db,
+                testUsers,
+                testPosts,
+                testComments
+              )
+            })
+            it('responds with 204', () => {
+              return supertest(app)
+                .delete(`/api/posts/${testPosts[0].id}`)
+                .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
+                .expect(204)
+            })
+        })
+    })
     describe('POST /api/posts', () => {
         context('Given no post description', () => {
+            before('clean tables', () => 
+            helpers.cleanTables(db)
+            )
             beforeEach('Insert posts', () => {
                 helpers.seedCupOfSugarTables(
                     db,
@@ -118,7 +160,11 @@ describe.only('Posts Endpoints', function () {
         })
     })
         context('given valid post description and title', () => {
-            beforeEach('insert posts', () => {
+            before('clean tables', () => 
+            helpers.cleanTables(db)
+            )
+            before('insert posts', () => {
+                console.log('working')
                 helpers.seedCupOfSugarTables(
                     db,
                     testUsers,
@@ -152,40 +198,12 @@ describe.only('Posts Endpoints', function () {
             })
         })
     })
-    describe('DELETE /api/posts/:post_id', () => {
-        context(`Given no post`, () => {
-            before('insert users', () =>
-              helpers.seedUsers(
-                db,
-                testUsers
-              )
-            )
-            it(`responds with 404 not found`, () => {
-                return supertest(app)
-                .delete('/api/posts/1')
-                .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
-                .expect(404)
-            })
-        })
-        context('Given the post exists', () => {
-            beforeEach('insert posts', () => {
-              helpers.seedCupOfSugarTables(
-                db,
-                testUsers,
-                testPosts,
-                testComments
-              )
-            })
-            it('responds with 204', () => {
-              return supertest(app)
-                .delete(`/api/posts/${testPosts[0].id}`)
-                .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
-                .expect(204)
-            })
-        })
-    })
+    
     describe(`GET /api/posts`, () => {
         context(`Given no posts`, () => {
+            before('clean tables', () => 
+            helpers.cleanTables(db)
+            )
             before('insert users', () =>
               helpers.seedUsers(
                 db,
@@ -200,6 +218,9 @@ describe.only('Posts Endpoints', function () {
                 .expect(200, [])
             })
         context('Given there are posts in the database', () => {
+            before('clean tables', () => 
+            helpers.cleanTables(db)
+            )
             beforeEach('insert posts', () =>
               helpers.seedCupOfSugarTables(
                 db,
