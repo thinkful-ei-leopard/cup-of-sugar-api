@@ -72,7 +72,6 @@ commentsRouter
     .delete(requireAuth, (req, res, next) => {
         CommentsService.getCommentById(req.app.get('db'), req.params.comment_id)
         .then(comment => {
-            console.log(comment)
             if(comment.length === 0) {
                 return res.status(404).send('Comment not found')
             }

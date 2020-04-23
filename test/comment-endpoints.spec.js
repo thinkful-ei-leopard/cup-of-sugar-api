@@ -14,7 +14,7 @@ describe('Comments Endpoints', function () {
   before('make knex instance', () => {
     db = knex({
       client: 'pg',
-      connection: process.env.Test_DATABASE_URL,
+      connection: process.env.TEST_DATABASE_URL,
     });
     app.set('db', db);
   });
