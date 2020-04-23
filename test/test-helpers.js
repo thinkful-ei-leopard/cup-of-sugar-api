@@ -99,7 +99,7 @@ function makeCommentsArray() {
 }
 
 function seedCupOfSugarTables(db, users, posts = [], comments = []) {
-    return db.transaction(async trx => {
+    return db.transaction(async (trx) => {
       await seedUsers(trx, users)
       await seedPosts(trx, posts)
     //   await trx.into('posts').insert(posts)
@@ -114,10 +114,9 @@ function seedCupOfSugarTables(db, users, posts = [], comments = []) {
           [comments[comments.length - 1].id],
       )}
     })
-  }
+}
 
 function cleanTables(db) {
-    console.log('cleaning')
     return db.raw(
         `TRUNCATE
             users,
@@ -135,7 +134,6 @@ function makeCupOfSugarFixtures() {
 }
 
 function seedPosts(db, posts) {
-    console.log('seeding posts')
     return db.into('posts').insert(posts)
       .then(() =>
         db.raw(
@@ -143,22 +141,22 @@ function seedPosts(db, posts) {
           [posts[posts.length - 1].id],
         )
       )
-  }
+}
 
 function seedUsers(db, users) {
-    console.log('seeding users')
     const preppedUsers = users.map(user => ({
       ...user,
       password: bcrypt.hashSync(user.password, 1)
     }))
-    return db.into('users').insert(preppedUsers)
-      .then(() =>
-        db.raw(
-          `SELECT setval('users_id_seq', ?)`,
-          [users[users.length - 1].id],
-        )
-      )
-  }
+    return db.transaction(async trx => {
+        await trx.into('users').insert(preppedUsers)
+    
+        // await trx.raw(
+        //   `SELECT setval('user_id_seq', ?)`,
+        //   [users[users.length - 1].id],
+        // )
+      })
+}
 
 function makeExpectedPost(post, user) {
     return {
@@ -198,8 +196,16 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
         subject: user.name,
         algorithm: 'HS256',
       })
-      console.log(token)
     return `Bearer ${token}`
+}
+
+async function seedCupOfSugarTables2(db, users, posts, comments) {
+    await seedUsers(db, users)
+
+    await db.transaction(async trx => {
+        await trx.into('posts').insert(posts)
+        await trx.into('comments').insert(comments)
+    })
 }
 
 module.exports = {
@@ -213,5 +219,6 @@ module.exports = {
     cleanTables,
     makeAuthHeader,
     seedCupOfSugarTables,
+    seedCupOfSugarTables2,
     getUserForItem
 }
