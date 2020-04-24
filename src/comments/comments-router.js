@@ -56,7 +56,10 @@ commentsRouter
                 .send({error: {message: 'Comment must not exceed 500 characters'}})
         }
         try {
-            let comment = await CommentsService.insertComment(req.app.get('db'), newComment)
+            await CommentsService.insertComment(
+                req.app.get('db'), 
+                newComment
+            )
             await CommentsService.incrementPostCommentsCount(
                 req.app.get('db'), 
                 req.params.post_id
@@ -68,7 +71,6 @@ commentsRouter
 
                 res
                     .status(201)
-                    .location(path.posix.join(req.originalUrl, `${comment.id}`))
                     .json(comments[0])
         }
         catch(error) {

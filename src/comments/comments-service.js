@@ -30,10 +30,6 @@ const CommentsService = {
         return db
             .insert(newComment)
             .into('comments')
-            .returning('*')
-            .then(rows => {
-                return rows[0]
-            })
     },
 
     incrementPostCommentsCount(db, postId) {
