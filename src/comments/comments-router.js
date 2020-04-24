@@ -29,14 +29,18 @@ commentsRouter
                 req.app.get('db'), 
                 req.params.post_id
             )
-                if (comments.length === 0) {
-                    return res.status(404).send('No comments found')
-                }
-                else { res
-                        .status(200)
-                        .json(comments)
-        }}
-        catch{next}
+            
+            if (comments.length === 0) {
+                return res.status(404).send('No comments found')
+            }
+            
+            res
+                .status(200)
+                .json(comments)
+
+        } catch(error) {
+            next(error)
+        }
     })
     .post(requireAuth, jsonBodyParser, async (req, res, next) => {
         const { content } = req.body;
@@ -68,26 +72,33 @@ commentsRouter
                     .json(comments[0])
         }
         catch(error) {
-
+            next(error)
         }
     })
 
 commentsRouter
-    .route('/comment/:comment_id')
-    .delete(requireAuth, (req, res, next) => {
-        CommentsService.getCommentById(req.app.get('db'), req.params.comment_id)
-        .then(comment => {
-            if(comment.length === 0) {
+    .route('/:post_id/:comment_id')
+    .delete(requireAuth, async (req, res, next) => {
+        try {
+            const comments = await CommentsService.getCommentById(req.app.get('db'), req.params.comment_id)
+       
+            if(comments.length === 0) {
                 return res.status(404).send('Comment not found')
             }
-        })
-        CommentsService.deleteComment(req.app.get('db'), req.params.comment_id)
-            .then(comment => {
-                res
-                .status(204)
-                .end()
-            })
-            .catch(next)
-        })
+        
+            await CommentsService.deleteComment(
+                req.app.get('db'), 
+                req.params.comment_id
+            )
+            await CommentsService.decrementPostCommentsCount(
+                req.app.get('db'),
+                req.params.post_id
+            )
+
+            res.status(204).end()
+        } catch(error) {
+            next(error)
+        }
+    })
 
 module.exports = commentsRouter

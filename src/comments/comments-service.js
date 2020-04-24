@@ -43,6 +43,13 @@ const CommentsService = {
             .increment('comments', 1)
     },
 
+    decrementPostCommentsCount(db, postId) {
+        return db
+            .from('posts')
+            .where('id', postId)
+            .decrement('comments', 1)
+    },
+
     deleteComment(db, id) {
         return db
             .from('comments')
