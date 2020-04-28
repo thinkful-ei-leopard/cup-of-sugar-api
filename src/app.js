@@ -8,6 +8,8 @@ const authRouter = require('./auth/auth-router');
 const usersRouter = require('./users/users-router');
 const postsRouter = require('./posts/posts-router');
 const commentsRouter = require('./comments/comments-router');
+const threadsRouter = require('./threads/threads-router');
+const messagesRouter = require('./messages/messages-router');
 
 const app = express();
 
@@ -25,6 +27,8 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/comments', commentsRouter);
+app.use('/api/threads', threadsRouter);
+app.use('/api/messages', messagesRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;

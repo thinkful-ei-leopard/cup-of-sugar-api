@@ -9,9 +9,9 @@ const jsonBodyParser = express.json()
 threadsRouter
     .route('/')
     .get(requireAuth, async (req, res, next) => {
-        const threads1 = await ThreadsService.getByUserId1(req.app.get('db'), req.user.zip);
-        const threads2 = await ThreadsService.getByUserId1(req.app.get('db'), req.user.zip);
-        const threads = [...threads1, threads2];
+        const threads1 = await ThreadsService.getByUserId1(req.app.get('db'), req.user.id);
+        const threads2 = await ThreadsService.getByUserId2(req.app.get('db'), req.user.id);
+        const threads = threads1.concat(threads2);
         res.status(200).json(threads);
       })
     .post(requireAuth, jsonBodyParser, async (req, res, next) => {
@@ -41,7 +41,7 @@ threadsRouter
         next;
       }
     });
-    postsRouter
+    threadsRouter
       .route('/:thread_id')
       .delete(requireAuth, async (req, res, next) => {
       try {
@@ -59,3 +59,5 @@ threadsRouter
         next;
       }
     });
+
+    module.exports = threadsRouter
