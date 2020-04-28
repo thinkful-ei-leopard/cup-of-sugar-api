@@ -29,7 +29,7 @@ threadsRouter
         return res.status(400).json({ error: { message: 'User cannot message themselves' } });
       }
       try {
-        const post = await ThreadsService.insertThread(
+        const thread = await ThreadsService.insertThread(
           req.app.get('db'), 
           newThread
         );
@@ -45,7 +45,7 @@ threadsRouter
       .route('/:thread_id')
       .delete(requireAuth, async (req, res, next) => {
       try {
-        const post = await ThreadsService.deleteThread(
+        const thread = await ThreadsService.deleteThread(
           req.app.get('db'),
           req.params.thread_id
         );
