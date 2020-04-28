@@ -29,14 +29,14 @@ messagesRouter
         content
       };
       try {
-        const post = await MessagesService.insertMessage(
+        const message = await MessagesService.insertMessage(
           req.app.get('db'), 
           newMessage
         );
         res
           .status(201)
-          .location(path.posix.join(req.originalUrl, `${thread.id}`))
-          .json(thread);
+          .location(path.posix.join(req.originalUrl, `${message.id}`))
+          .json(message);
       } catch (error) {
         next;
       }
