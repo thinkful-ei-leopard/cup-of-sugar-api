@@ -59,3 +59,5 @@ messagesRouter
         next;
       }
     });
+
+    module.exports = messagesRouter
