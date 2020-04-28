@@ -1,6 +1,8 @@
 BEGIN;
 
 TRUNCATE
+  "messages",
+  "threads",
   "comments",
   "posts",
   "users";
