@@ -24,7 +24,7 @@ INSERT INTO "comments" ("id", "user_id", "post_id", "content")
 VALUES 
   (1, 1, 3, 'I have some flour you can have no problem'),
   (2, 2, 1, 'I need all 2654 rolls I have but I will keep an eye out when I go to the store'),
-  (3, 1, 1, "Oh you're such a sweety thank you");
+  (3, 1, 1, 'Oh you are such a sweety thank you');
 
 INSERT INTO "threads" ("id", "user_id1", "user_id2", "name1", "user_name1", "name2", "user_name2")
 VALUES
