@@ -25,6 +25,7 @@ threadsRouter
         name2,
         user_name2
       };
+      console.log(newThread)
       if (user_id1 === user_id2) {
         return res.status(400).json({ error: { message: 'User cannot message themselves' } });
       }

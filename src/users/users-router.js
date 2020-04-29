@@ -7,7 +7,7 @@ const usersRouter = express.Router()
 const jsonBodyParser = express.json()
 
 usersRouter
-    .route('/')
+    .route('/:zip')
     .get(requireAuth, async (req, res, next) => {
         try {
         const allUsers = await UsersService.getAllUsers(req.app.get('db'))
@@ -73,7 +73,7 @@ usersRouter
   })
 
 usersRouter
-    .route('/user')
+    .route('/user/:user_id')
     .get(requireAuth, async (req, res, next) => {
         const user = await UsersService.getById(req.app.get('db'), req.user.id)
             return res
