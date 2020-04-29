@@ -41,23 +41,33 @@ threadsRouter
         next;
       }
     });
-    threadsRouter
-      .route('/:thread_id')
-      .delete(requireAuth, async (req, res, next) => {
-      try {
-        const thread = await ThreadsService.deleteThread(
-          req.app.get('db'),
-          req.params.thread_id
-        );
-        if (!thread) {
-          return res.status(404).json({
-            error: { message: 'Thread does not exist' },
-          });
-        }
-        res.status(204).end();
-      } catch(error) {
-        next;
-      }
+threadsRouter
+  .route('/:thread_id')
+  .delete(requireAuth, async (req, res, next) => {
+  try {
+    const thread = await ThreadsService.deleteThread(
+      req.app.get('db'),
+      req.params.thread_id
+    );
+    if (!thread) {
+      return res.status(404).json({
+        error: { message: 'Thread does not exist' },
+      });
+    }
+    res.status(204).end();
+  } catch(error) {
+    next;
+  }
+})
+.get(requireAuth, async (req, res, next) => {
+  const thread = await ThreadsService.getById(req.app.get('db'), req.params.thread_id)
+  console.log(thread)
+  if (!thread) {
+    return res.status(404).json({
+      error: { message: 'Thread does not exist' },
     });
+  }
+  res.status(200).json(thread)
+});
 
     module.exports = threadsRouter
