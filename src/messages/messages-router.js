@@ -17,22 +17,20 @@ messagesRouter
       })
     .post(requireAuth, jsonBodyParser, async (req, res, next) => {
       const user_id = req.user.id;
-      const name = req.user.name;
-      const thread_id = req.params.thread_id;
-      const user_name = req.user.user_name;
-      const { content } = req.body;
+      const thread_id = parseInt(req.params.thread_id);
+      const content = req.body.newMessage;
       const newMessage = {
         user_id,
-        name,
         thread_id,
-        user_name,
         content
       };
+      console.log(newMessage)
       try {
         const message = await MessagesService.insertMessage(
           req.app.get('db'), 
           newMessage
         );
+        console.log('message', message)
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `${message.id}`))
