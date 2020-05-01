@@ -7,13 +7,14 @@ const usersRouter = express.Router()
 const jsonBodyParser = express.json()
 
 usersRouter
-    .route('/:zip')
+    .route('/zip/:zip')
     .get(requireAuth, async (req, res, next) => {
+      console.log('accessed get by zip route')
         try {
-        const allUsers = await UsersService.getAllUsers(req.app.get('db'))
+        const usersInZip = await UsersService.getUsersByZip(req.app.get('db'), req.params.zip)
             return res
                 .status(200)
-                .json(allUsers)
+                .json(usersInZip)
         }
         catch {next}
     })
@@ -75,12 +76,13 @@ usersRouter
   })
 
 usersRouter
-    .route('/user/:user_id')
-    .get(requireAuth, async (req, res, next) => {
-        const user = await UsersService.getById(req.app.get('db'), req.user.id)
-            return res
-                .status(200)
-                .json(user)
-    })
+  .route('/:user_id')
+  .get(requireAuth, async (req, res, next) => {
+    console.log(req.user)
+      const user = await UsersService.getById(req.app.get('db'), req.params.user_id)
+          return res
+              .status(200)
+              .json(user)
+  })
 
 module.exports = usersRouter;

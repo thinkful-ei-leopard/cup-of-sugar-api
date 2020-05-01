@@ -7,6 +7,16 @@ const messagesRouter = express.Router()
 const jsonBodyParser = express.json()
 
 messagesRouter
+  .route('/')
+  .get(requireAuth, async (req, res, next) => {
+    const messages = await MessagesService.getAllMessages(req.app.get('db'));
+    if (!messages) {
+        return res.status(400).send({error: {message: 'No messages found'}})
+    }
+    res.status(200).json(messages);
+  })
+
+messagesRouter
     .route('/:thread_id')
     .get(requireAuth, async (req, res, next) => {
         const messages = await MessagesService.getByThread(req.app.get('db'), req.params.thread_id);
