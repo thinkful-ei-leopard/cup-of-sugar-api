@@ -10,6 +10,7 @@ const UsersService = {
     },
 
     getUsersByZip(db, zip) {
+      console.log('getting')
       return db 
         .from('users as user')
         .where('user.zip', zip)
@@ -21,7 +22,7 @@ const UsersService = {
 
     getById(db, id) {
         return db
-            .select('name')
+            .select('*')
             .from('users as user')
             .where('user.id', id);
     },
