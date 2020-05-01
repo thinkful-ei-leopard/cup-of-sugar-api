@@ -20,9 +20,9 @@ usersRouter
 
   usersRouter
   .post('/', jsonBodyParser, async (req, res, next) => {
-    const { password, username, name, email, zip } = req.body
+    const { password, username, name, email, zip, img_src, img_alt } = req.body
 
-    for (const field of ['name', 'username', 'password', 'email', 'zip'])
+    for (const field of ['name', 'username', 'password', 'email', 'zip', 'img_alt'])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`
@@ -55,7 +55,9 @@ usersRouter
         name,
         email, 
         zip,
-        admin_status: false
+        admin_status: false,
+        img_src,
+        img_alt,
       }
 
       const user = await UsersService.insertUser(

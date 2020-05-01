@@ -7,10 +7,10 @@ TRUNCATE
   "posts",
   "users";
 
-INSERT INTO "users" ("id", "name", "user_name", "password", "email", "zip", "admin_status")
+INSERT INTO "users" ("id", "name", "user_name", "password", "email", "zip", "admin_status", "img_src", "img_alt")
 VALUES
-  (1, 'admin1', 'admin1', '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG', 'admin@admin.com', 00999, 'true'), --password = pass
-  (2, 'daniel1', 'daniel', '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG', 'daniel@daniel.com', 00999, 'false'); --password = pass
+  (1, 'admin1', 'admin1', '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG', 'admin@admin.com', 00999, 'true', 'https://res.cloudinary.com/mmpr/image/upload/v1588347135/ncolhqaj9q3nbqg2wfqn.jpg', 'Admin1 Profile Picture'), --password = pass
+  (2, 'daniel1', 'daniel', '$2a$10$fCWkaGbt7ZErxaxclioLteLUgg4Q3Rp09WW0s/wSLxDKYsaGYUpjG', 'daniel@daniel.com', 00999, 'false', null, 'daniel Profile Picture'); --password = pass
 
 
 INSERT INTO "posts" ("id", "user_id", "type", "title", "description", "comments") 
