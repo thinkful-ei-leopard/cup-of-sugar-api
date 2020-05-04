@@ -57,12 +57,48 @@ postsRouter
         .location(path.posix.join(req.originalUrl, `${post.id}`))
         .json(post);
     } catch (error) {
-      next;
+      next(error)
     }
   });
 
 postsRouter
   .route('/:post_id')
+  .patch(requireAuth, jsonBodyParser, async (req, res, next) => {
+    const { title, description } = req.body
+
+    if (!title) {
+      return res.status(400).json({ error: { message: 'Title required' } });
+    }
+    if (!description) {
+      return res
+        .status(400)
+        .json({ error: { message: 'Description required' } });
+    }
+    if (description.length > 500) {
+      return res
+        .status(400)
+        .json({
+          error: { message: 'Description must not exceed 500 characters' },
+        });
+    }
+    if (title.length > 60) {
+      return res
+        .status(400)
+        .json({ error: { message: 'Title must not exceed 60 characters' } });
+    }
+
+    try {
+      const editedPost = await PostsService.editPost(
+        req.app.get('db'),
+        req.params.post_id,
+        title,
+        description
+      )
+      res.json(editedPost)
+    } catch(error) {
+      next(error)
+    }
+  })
   .delete(requireAuth, async (req, res, next) => {
   try {
     const post = await PostsService.deletePost(
@@ -76,7 +112,7 @@ postsRouter
     }
     res.status(204).end();
   } catch(error) {
-    next;
+    next(error)
   }
 });
 

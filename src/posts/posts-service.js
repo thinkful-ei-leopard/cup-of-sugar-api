@@ -39,6 +39,20 @@ const PostsService = {
             })
     },
 
+    editPost(db, id, title, description) {
+        return db
+            .from('posts')
+            .where('id', id)
+            .update({
+                title,
+                description,
+            })
+            .returning('*')
+            .then(rows => {
+                return rows[0]
+            })
+    },
+
     deletePost(db, id) {
         return db
             .from('posts')
