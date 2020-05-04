@@ -10,14 +10,15 @@ const UsersService = {
     },
 
     getUsersByZip(db, zip) {
-      console.log('getting')
       return db 
         .from('users as user')
         .where('user.zip', zip)
         .select('id',
                 'name',
                 'user_name',
-                'zip')
+                'zip',
+                'img_src',
+                'img_alt')
     },
 
     getById(db, id) {

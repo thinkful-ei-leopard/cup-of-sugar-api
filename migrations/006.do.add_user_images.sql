@@ -1,3 +1,3 @@
 ALTER TABLE users 
   ADD COLUMN img_src TEXT,
-  ADD COlUMN img_alt TEXT NOT NULL;
+  ADD COLUMN img_alt TEXT;
