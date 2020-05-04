@@ -16,16 +16,19 @@ threadsRouter
       })
     .post(requireAuth, jsonBodyParser, async (req, res, next) => {
       const user_id1 = req.user.id;
-      const { name1, user_name1, user_id2, name2, user_name2 } = req.body;
+      const { name1, user_name1, user_id2, name2, user_name2, img_src1, img_alt1, img_src2, img_alt2, } = req.body;
       const newThread = {
         user_id1,
         name1,
         user_name1,
         user_id2, 
         name2,
-        user_name2
+        user_name2,
+        img_src1,
+        img_alt1,
+        img_src2,
+        img_alt2,
       };
-      console.log(newThread)
       if (user_id1 === user_id2) {
         return res.status(400).json({ error: { message: 'User cannot message themselves' } });
       }
