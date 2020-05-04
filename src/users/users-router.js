@@ -9,7 +9,6 @@ const jsonBodyParser = express.json()
 usersRouter
     .route('/zip/:zip')
     .get(requireAuth, async (req, res, next) => {
-      console.log('accessed get by zip route')
         try {
         const usersInZip = await UsersService.getUsersByZip(req.app.get('db'), req.params.zip)
             return res
@@ -28,11 +27,21 @@ usersRouter
         return res.status(400).json({
           error: `Missing '${field}' in request body`
         })
-    if(zip.length !== 5) {
-      return res.status(400).json({
-        error: 'Zip code must be 5 digits'
-      })
-    }
+      if(zip.length !== 5) {
+        return res.status(400).json({
+          error: 'Zip code must be 5 digits'
+        })
+      }
+      if(name.length > 20) {
+        return res.status(400).json({
+          error: 'Name cannot exceed 20 characters'
+        })
+      }
+      if(username.length > 20) {
+        return res.status(400).json({
+          error: 'User Name cannot exceed 20 characters'
+        })
+      }
 
     try {
       const passwordError = UsersService.validatePassword(password)
