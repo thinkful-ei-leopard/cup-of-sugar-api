@@ -64,7 +64,7 @@ postsRouter
 postsRouter
   .route('/:post_id')
   .patch(requireAuth, jsonBodyParser, async (req, res, next) => {
-    const { title, description } = req.body
+    const { title, description, resolved } = req.body
 
     if (!title) {
       return res.status(400).json({ error: { message: 'Title required' } });
@@ -92,7 +92,8 @@ postsRouter
         req.app.get('db'),
         req.params.post_id,
         title,
-        description
+        description,
+        resolved
       )
       res.json(editedPost)
     } catch(error) {

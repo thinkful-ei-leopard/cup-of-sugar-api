@@ -39,13 +39,14 @@ const PostsService = {
             })
     },
 
-    editPost(db, id, title, description) {
+    editPost(db, id, title, description, resolved) {
         return db
             .from('posts')
             .where('id', id)
             .update({
                 title,
                 description,
+                resolved
             })
             .returning('*')
             .then(rows => {
