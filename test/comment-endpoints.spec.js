@@ -3,7 +3,7 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 require('dotenv').config();
 
-describe('Comments Endpoints', function () {
+describe.only('Comments Endpoints', function () {
   let db;
   const {
     testUsers,
@@ -24,7 +24,7 @@ describe('Comments Endpoints', function () {
 
   afterEach('cleanup', () => helpers.cleanTables(db));
 
-  describe('Protected endpoints', () => {
+  describe.only('Protected endpoints', () => {
     beforeEach('Insert Comments', () => {
       return helpers.seedCupOfSugarTables2(
         db,
@@ -37,31 +37,40 @@ describe('Comments Endpoints', function () {
       {
         name: 'GET /api/comments',
         path: '/api/comments',
+        method: supertest(app).get,
       },
       {
         name: 'GET /api/comments/:post_id',
-        path: '/api/comments/1'
+        path: '/api/comments/1',
+        method: supertest(app).get,
       },
+      {
+        name: 'POST /api/comments/:post_id',
+        path: '/api/comments/1',
+        method: supertest(app).post,
+      },
+      {
+        name: 'DELETE /api/comments/:post_id/:comment_id',
+        path: '/api/comments/1/1',
+        method: supertest(app).delete,
+      }
     ];
     protectedEndpoints.forEach(endpoint => {
       describe(endpoint.name, () => {
         it('responds with 401 \'Missing bearer token\' when no bearer token', () => {
-          return supertest(app)
-            .get(endpoint.path)
+          return endpoint.method(endpoint.path)
             .expect(401, { error: 'Missing bearer token' });
         });
         it('responds 401 \'Unauthorized request\' when invalid JWT secret', () => {
           const validUser = testUsers[0];
           const invalidSecret = 'bad-secret';
-          return supertest(app)
-            .get(endpoint.path)
+          return endpoint.method(endpoint.path)
             .set('Authorization', helpers.makeAuthHeader(validUser, invalidSecret))
             .expect(401, { error: 'Unauthorized request' });
         });
         it('responds 401 \'Unauthorized request\' when invalid sub in payload', () => {
           const invalidUser = { name: 'user-not-existy', id: 1 };
-          return supertest(app)
-            .get(endpoint.path)
+          return endpoint.method(endpoint.path)
             .set('Authorization', helpers.makeAuthHeader(invalidUser))
             .expect(401, { error: 'Unauthorized request' });
         });
