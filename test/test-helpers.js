@@ -49,10 +49,7 @@ function makePostsArray() {
           title: 'testing 1 2',
           description: 'its a test descrition',
           comments: 0,
-          name: 'test1_name',
           resolved: false,
-          user_name: 'test1',
-          zip: 31254
         },
         {
             id: 2,
@@ -62,10 +59,7 @@ function makePostsArray() {
             title: 'testing 1 2 3',
             description: 'its a description',
             comments: 0,
-            name: 'test1_name',
             resolved: false,
-            user_name: 'test1',
-            zip: 31254
         },
         {
             id: 3,
@@ -75,10 +69,7 @@ function makePostsArray() {
             title: 'testing 1 2 12 12',
             description: 'its a test',
             comments: 0,
-            name: 'test2_name',
             resolved: false,
-            user_name: 'test2',
-            zip: 31254
         },
     ]
 }
@@ -90,40 +81,28 @@ function makeCommentsArray() {
             user_id: 1,
             post_id: 1,
             date_modified: "2020-04-22T15:07:04.118Z",
-            content: 'test content',
-            name: 'test1_name',
-            user_name: 'test1',
-            zip: 31254
+            content: 'test content'
         },
         {
             id: 2,
             user_id: 1,
             post_id: 2,
             date_modified: "2020-04-22T15:07:04.118Z",
-            content: 'test 2 content',
-            name: 'test1_name',
-            user_name: 'test1',
-            zip: 31254
+            content: 'test 2 content'
         },
         {
             id: 3,
             user_id: 2,
             post_id: 1,
             date_modified: "2020-04-22T15:07:04.118Z",
-            content: 'test 3 content',
-            name: 'test2_name',
-            user_name: 'test2',
-            zip: 31254
+            content: 'test 3 content'
         },
         {
             id: 4,
             user_id: 2,
             post_id: 3,
             date_modified: "2020-04-22T15:07:04.118Z",
-            content: 'test 4 content',
-            name: 'test2_name',
-            user_name: 'test2',
-            zip: 31254
+            content: 'test 4 content'
         },
     ]
 }
@@ -210,15 +189,13 @@ function makeCupOfSugarFixtures() {
     return { testUsers, testPosts, testComments, testMessages, testThreads }
 }
 
-function seedCupOfSugarTables(db, users, posts = [], comments = []) {
+function seedCupOfSugarTables(db, users, posts = [], comments = [], messages = [], threads = []) {
     return db.transaction(async (trx) => {
       await seedUsers(trx, users)
       await seedPosts(trx, posts)
-    //   await trx.into('posts').insert(posts)
-    //   await trx.raw(
-    //     `SELECT setval('posts_id_seq', ?)`,
-    //     [posts[posts.length - 1].id],
-    //   )
+      await seedThreads(trx, threads)
+      await seedMessages(trx, messages)
+    
       if(comments.length) {
         await trx.into('comments').insert(comments)
         await trx.raw(
@@ -234,7 +211,8 @@ function cleanTables(db) {
             users,
             posts,
             comments,
-            messages
+            messages,
+            threads
             RESTART IDENTITY CASCADE`
     )
 }
@@ -262,6 +240,26 @@ function seedUsers(db, users) {
         //   [users[users.length - 1].id],
         // )
       })
+}
+
+function seedMessages(db, messages) {
+    return db.into('messages').insert(messages)
+      .then(() =>
+        db.raw(
+          `SELECT setval('messages_id_seq', ?)`,
+          [messages[messages.length - 1].id],
+        )
+      )
+}
+
+function seedThreads(db, threads) {
+    return db.into('threads').insert(threads)
+      .then(() =>
+        db.raw(
+          `SELECT setval('threads_id_seq', ?)`,
+          [threads[threads.length - 1].id],
+        )
+      )
 }
 
 function makeExpectedPost(post, user) {
@@ -305,15 +303,6 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     return `Bearer ${token}`
 }
 
-async function seedCupOfSugarTables2(db, users, posts, comments) {
-    await seedUsers(db, users)
-
-    await db.transaction(async trx => {
-        await trx.into('posts').insert(posts)
-        await trx.into('comments').insert(comments)
-    })
-}
-
 module.exports = {
     seedUsers,
     makeExpectedComment,
@@ -325,6 +314,5 @@ module.exports = {
     cleanTables,
     makeAuthHeader,
     seedCupOfSugarTables,
-    seedCupOfSugarTables2,
     getUserForItem
 }

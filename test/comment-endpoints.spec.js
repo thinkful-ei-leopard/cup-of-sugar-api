@@ -8,7 +8,9 @@ describe.only('Comments Endpoints', function () {
   const {
     testUsers,
     testPosts,
-    testComments
+    testComments,
+    testMessages,
+    testThreads
   } = helpers.makeCupOfSugarFixtures(); 
 
   before('make knex instance', () => {
@@ -26,11 +28,13 @@ describe.only('Comments Endpoints', function () {
 
   describe.only('Protected endpoints', () => {
     beforeEach('Insert Comments', () => {
-      return helpers.seedCupOfSugarTables2(
+      return helpers.seedCupOfSugarTables(
         db,
         testUsers,
         testPosts,
-        testComments
+        testComments,
+        testMessages,
+        testThreads
       );
     });
     const protectedEndpoints = [
