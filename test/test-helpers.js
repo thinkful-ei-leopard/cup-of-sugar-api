@@ -5,30 +5,36 @@ function makeUsersArray() {
     return [
         {
             id: 1,
-            name: 'test',
-            user_name: 'test',
+            name: 'test1_name',
+            user_name: 'test1',
             password: 'password',
             email: 'test@test.com',
             zip: 31254,
-            admin_status: true
+            admin_status: true,
+            img_alt:'test1 Profile picture',
+            img_src:'https://test1.jpg'
         },
         {
             id: 2,
-            name: 'test2',
+            name: 'test2_name',
             user_name: 'test2',
             password: 'pw',
             email: 'test@test.com',
             zip: 31254,
-            admin_status: false
+            admin_status: false,
+            img_alt:'test2 Profile picture',
+            img_src:'https://test2.jpg'
         },
         {
             id: 3,
-            name: 'test3',
+            name: 'test3_name',
             user_name: 'test3',
             password: 'insecure',
             email: 'test@test.com',
             zip: 31254,
-            admin_status: false
+            admin_status: false,
+            img_alt:'test3 Profile picture',
+            img_src:'https://test3.jpg'
         },
     ]
 }
@@ -42,7 +48,11 @@ function makePostsArray() {
           type: 'request',
           title: 'testing 1 2',
           description: 'its a test descrition',
-          comments: 0
+          comments: 0,
+          name: 'test1_name',
+          resolved: false,
+          user_name: 'test1',
+          zip: 31254
         },
         {
             id: 2,
@@ -51,7 +61,11 @@ function makePostsArray() {
             type: 'offer',
             title: 'testing 1 2 3',
             description: 'its a description',
-            comments: 0
+            comments: 0,
+            name: 'test1_name',
+            resolved: false,
+            user_name: 'test1',
+            zip: 31254
         },
         {
             id: 3,
@@ -60,7 +74,11 @@ function makePostsArray() {
             type: 'request',
             title: 'testing 1 2 12 12',
             description: 'its a test',
-            comments: 0
+            comments: 0,
+            name: 'test2_name',
+            resolved: false,
+            user_name: 'test2',
+            zip: 31254
         },
     ]
 }
@@ -72,30 +90,124 @@ function makeCommentsArray() {
             user_id: 1,
             post_id: 1,
             date_modified: "2020-04-22T15:07:04.118Z",
-            content: 'test content'
+            content: 'test content',
+            name: 'test1_name',
+            user_name: 'test1',
+            zip: 31254
         },
         {
             id: 2,
             user_id: 1,
             post_id: 2,
             date_modified: "2020-04-22T15:07:04.118Z",
-            content: 'test 2 content'
+            content: 'test 2 content',
+            name: 'test1_name',
+            user_name: 'test1',
+            zip: 31254
         },
         {
             id: 3,
             user_id: 2,
             post_id: 1,
             date_modified: "2020-04-22T15:07:04.118Z",
-            content: 'test 3 content'
+            content: 'test 3 content',
+            name: 'test2_name',
+            user_name: 'test2',
+            zip: 31254
         },
         {
             id: 4,
             user_id: 2,
             post_id: 3,
             date_modified: "2020-04-22T15:07:04.118Z",
-            content: 'test 4 content'
+            content: 'test 4 content',
+            name: 'test2_name',
+            user_name: 'test2',
+            zip: 31254
         },
     ]
+}
+
+function makeMessagesArray() {
+    return [
+        {
+            id: 1,
+            thread_id: 1,
+            user_id: 1,
+            content: 'test',
+            date_modified: '2020-04-22T15:07:04.118Z'
+        },
+        {
+            id: 2,
+            thread_id: 1,
+            user_id: 2,
+            content: 'test test',
+            date_modified: '2020-04-22T15:07:04.118Z'
+        },
+        {
+            id: 3,
+            thread_id: 1,
+            user_id: 1,
+            content: 'test test test',
+            date_modified: '2020-04-22T15:07:04.118Z'
+        }
+    ]
+}
+
+function makeThreadsArray() {
+    return [
+        {
+            id: 1,
+            date_modified: '2020-05-05T15:10:21.720Z',
+            img_alt1: 'test1 Profile picture',
+            img_alt2: 'test2 Profile picture',
+            img_src1: 'https://test1.jpg',
+            img_src2: 'https://test2.jpg',
+            name1: 'test1_name',
+            name2: 'test2_name',
+            user_id1: 1,
+            user_id2: 2,
+            user_name1: 'test1',
+            user_name2: 'test2'
+        },
+        {
+            id: 2,
+            date_modified: '2020-05-05T15:10:21.720Z',
+            img_alt1: 'test1 Profile picture',
+            img_alt2: 'test3 Profile picture',
+            img_src1: 'https://test1.jpg',
+            img_src2: 'https://test3.jpg',
+            name1: 'test1_name',
+            name2: 'test3_name',
+            user_id1: 1,
+            user_id2: 3,
+            user_name1: 'test1',
+            user_name2: 'test3'
+        },
+        {
+            id: 3,
+            date_modified: '2020-05-05T15:10:21.720Z',
+            img_alt1: 'test2 Profile picture',
+            img_alt2: 'test3 Profile picture',
+            img_src1: 'https://test2.jpg',
+            img_src2: 'https://test3.jpg',
+            name1: 'test2_name',
+            name2: 'test3_name',
+            user_id1: 1,
+            user_id2: 3,
+            user_name1: 'test2',
+            user_name2: 'test3'
+        },
+    ]
+}
+
+function makeCupOfSugarFixtures() {
+    const testUsers = makeUsersArray()
+    const testPosts = makePostsArray()
+    const testComments = makeCommentsArray()
+    const testMessages = makeMessagesArray()
+    const testThreads = makeThreadsArray()
+    return { testUsers, testPosts, testComments, testMessages, testThreads }
 }
 
 function seedCupOfSugarTables(db, users, posts = [], comments = []) {
@@ -121,16 +233,10 @@ function cleanTables(db) {
         `TRUNCATE
             users,
             posts,
-            comments
+            comments,
+            messages
             RESTART IDENTITY CASCADE`
     )
-}
-
-function makeCupOfSugarFixtures() {
-    const testUsers = makeUsersArray()
-    const testPosts = makePostsArray()
-    const testComments = makeCommentsArray()
-    return { testUsers, testPosts, testComments }
 }
 
 function seedPosts(db, posts) {
