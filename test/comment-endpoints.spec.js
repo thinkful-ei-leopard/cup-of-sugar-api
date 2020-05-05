@@ -3,7 +3,7 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 require('dotenv').config();
 
-describe.only('Comments Endpoints', function () {
+describe('Comments Endpoints', function () {
   let db;
   const {
     testUsers,
@@ -26,7 +26,7 @@ describe.only('Comments Endpoints', function () {
 
   afterEach('cleanup', () => helpers.cleanTables(db));
 
-  describe.only('Protected endpoints', () => {
+  describe('Protected endpoints', () => {
     beforeEach('Insert Comments', () => {
       return helpers.seedCupOfSugarTables(
         db,
