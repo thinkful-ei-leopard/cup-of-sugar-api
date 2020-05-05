@@ -42,6 +42,10 @@ authRouter
       const payload = {
         user_id: dbUser.id,
         name: dbUser.name,
+        zip: dbUser.zip,
+        user_name: dbUser.user_name,
+        img_src: dbUser.img_src,
+        img_alt: dbUser.img_alt
       }
       res.send({
         authToken: AuthService.createJwt(sub, payload),

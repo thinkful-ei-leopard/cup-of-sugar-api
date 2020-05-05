@@ -23,9 +23,15 @@ const UsersService = {
 
     getById(db, id) {
         return db
-            .select('*')
+            .select('id',
+            'name',
+            'user_name',
+            'zip',
+            'img_src',
+            'img_alt')
             .from('users as user')
-            .where('user.id', id);
+            .where('user.id', id)
+            .first();
     },
 
     insertUser(db, newUser) {
