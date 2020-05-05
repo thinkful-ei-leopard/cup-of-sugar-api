@@ -3,76 +3,91 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 require('dotenv').config();
 
-describe('Posts Endpoints', function () {
+describe.only('Posts Endpoints', function () {
   let db;
   const {
     testUsers,
     testPosts,
-    testComments
+    testComments,
+    testMessages,
+    testThreads
   } = helpers.makeCupOfSugarFixtures(); 
 
   before('make knex instance', () => {
     db = knex({
       client: 'pg',
-      connection: process.env.Test_DATABASE_URL,
+      connection: process.env.TEST_DATABASE_URL,
     });
     app.set('db', db);
   });
-
   after('disconnect from db', () => db.destroy());
-  
+
   before('cleanup', () => helpers.cleanTables(db));
 
-  describe('Protected endpoints', () => {
-    beforeEach('Make Posts', () => {
-      helpers.makeCupOfSugarFixtures(
+  afterEach('cleanup', () => helpers.cleanTables(db));
+
+  describe.skip('Protected endpoints', () => {
+    beforeEach('Insert Comments', () => {
+      return helpers.seedCupOfSugarTables(
         db,
         testUsers,
         testPosts,
-        testComments
+        testComments,
+        testMessages,
+        testThreads
       );
     });
     const protectedEndpoints = [
       {
         name: 'GET /api/posts',
-        path: '/api/posts'
+        path: '/api/posts',
+        method: supertest(app).get
+      },
+      {
+        name: 'POST /api/posts',
+        path: '/api/posts',
+        method: supertest(app).post
+      },
+      {
+        name: 'PATCH /api/posts/:post_id',
+        path: '/api/posts/1',
+        method: supertest(app).patch
+      },
+      {
+        name: 'DELETE /api/posts/:post_id',
+        path: '/api/posts/1',
+        method: supertest(app).delete
       },
     ];
     protectedEndpoints.forEach(endpoint => {
       describe(endpoint.name, () => {
         it('responds with 401 \'Missing bearer token\' when no bearer token', () => {
-          return supertest(app)
-            .get(endpoint.path)
+          return endpoint.method(endpoint.path)
             .expect(401, { error: 'Missing bearer token' });
         });
         it('responds 401 \'Unauthorized request\' when invalid JWT secret', () => {
           const validUser = testUsers[0];
           const invalidSecret = 'bad-secret';
-          return supertest(app)
-            .get(endpoint.path)
+          return endpoint.method(endpoint.path)
             .set('Authorization', helpers.makeAuthHeader(validUser, invalidSecret))
             .expect(401, { error: 'Unauthorized request' });
         });
         it('responds 401 \'Unauthorized request\' when invalid sub in payload', () => {
           const invalidUser = { name: 'user-not-existy', id: 1 };
-          return supertest(app)
-            .get(endpoint.path)
+          return endpoint.method(endpoint.path)
             .set('Authorization', helpers.makeAuthHeader(invalidUser))
             .expect(401, { error: 'Unauthorized request' });
         });
       });
     });
   });
-  describe('DELETE /api/posts/:post_id', () => {
+  describe.skip('DELETE /api/posts/:post_id', () => {
     context('Given no post', () => {
-      before('clean tables', () => 
-        helpers.cleanTables(db)
-      );
       before('insert users', () => {
         return helpers.seedUsers(
           db,
           testUsers
-        )
+        );
       });
       it('responds with 404 not found', () => {
         return supertest(app)
@@ -82,15 +97,14 @@ describe('Posts Endpoints', function () {
       });
     });
     context('Given the post exists', () => {
-      before('clean tables', () => 
-        helpers.cleanTables(db)
-      );
       beforeEach('insert posts', () => {
         return helpers.seedCupOfSugarTables(
           db,
           testUsers,
           testPosts,
-          testComments
+          testComments,
+          testMessages,
+          testThreads
         );
       });
       it('responds with 204', () => {
@@ -101,111 +115,44 @@ describe('Posts Endpoints', function () {
       });
     });
   });
-  describe('POST /api/posts', () => {
-    context('Given no post description', () => {
-      before('clean tables', () => 
-        helpers.cleanTables(db)
+  describe.skip('POST /api/posts', () => {
+    beforeEach('insert users', () => {
+      return helpers.seedUsers(
+        db,
+        testUsers
       );
-      beforeEach('Insert posts', () => {
-        return helpers.seedCupOfSugarTables(
-          db,
-          testUsers,
-          testPosts,
-          testComments,
-          testPosts
-        );
-        it('Responds with 400 Bad Request', () => {
-          const descriptionlessPost = {
-            id: 1,
-            user_id: 1,
-            date_modified: new Date(),
-            type: 'request',
-            title: 'testing 1 2',
-            description: null
-          };
-          return supertest(app) 
-            .post('/api/posts')
-            .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
-            .send(descriptionlessPost)
-            .expect(400);
-        });
-      });
     });
-    context('Given no post title', () => {
-      beforeEach('Insert posts', () => {
-        return helpers.seedCupOfSugarTables(
-          db,
-          testUsers,
-          testPosts,
-          testComments,
-          testPosts
-        );
-        it('Responds with 400 Bad Request', () => {
-          const titlelessPost = {
-            id: 1,
-            user_id: 1,
-            date_modified: new Date(),
-            type: 'request',
-            title: null,
-            description: 'its a test description'
-          };
-          return supertest(app) 
-            .post('/api/posts')
-            .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
-            .send(titlelessPost)
-            .expect(400);
-        });
-      });
-    });
-    context('given valid post description and title', () => {
-      before('clean tables', () => 
-        helpers.cleanTables(db)
-      );
-      before('insert posts', () => {
-        return helpers.seedCupOfSugarTables(
-          db,
-          testUsers,
-          testPosts,
-          testComments,
-          testPosts
-        );
-      });
-      it('responds with 201 and new post', () => {
-        let newPost = {
-          id: 1,
-          user_id: 1,
-          date_modified: new Date(),
-          type: 'request',
-          title: 'its a test title',
-          description: 'its a test description'
+    context('Given a valid post', () => {});
+    context('Given an empty required field', () => {
+      const requiredFields = ['type','title', 'description'];
+
+      requiredFields.forEach(field => {
+        const testUser = testUsers[0];
+        const newPost = {
+          type: 'offer',
+          title: 'New Title',
+          description: 'New Description'
         };
-        return supertest(app)
-          .post('/api/posts')
-          .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
-          .send(newPost)
-          .expect(201)
-          .expect(res => {
-            expect(res.body).to.have.property('id');
-            expect(res.body.description).to.eql(newPost.description);
-            expect(res.body.title).to.eql(newPost.title);
-            expect(res.body.type).to.eql(newPost.type);
-            expect(res.body).to.have.property('user_id');
-            expect(res.body).to.have.property('date_modified');
-          });
+
+        it(`responds with 400 and an error message when the '${field}' is missing`, () => {
+          delete newPost[field];
+
+          return supertest(app)
+            .post('/api/posts')
+            .set('Authorization', helpers.makeAuthHeader(testUser, process.env.JWT_SECRET))
+            .send(newPost)
+            .expect(400, {error: { message: `${field} required`}});
+        });
       });
     });
   });
-    
   describe('GET /api/posts', () => {
     context('Given no posts', () => {
-      before('clean tables', () => 
-        helpers.cleanTables(db)
-      );
       before('insert users', () => {
         return helpers.seedUsers(
           db,
           testUsers
-        )
+        );
       });
 
       it('responds with 200 and empty list', () => {
@@ -224,7 +171,7 @@ describe('Posts Endpoints', function () {
             testUsers,
             testPosts,
             testComments
-          )
+          );
         });
         it('responds with 200 and all of the posts by zip', () => {
           const expectedPosts = testPosts.map(post =>

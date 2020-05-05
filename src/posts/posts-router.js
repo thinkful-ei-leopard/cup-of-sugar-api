@@ -25,15 +25,15 @@ postsRouter
       description,
     };
     if (!type) {
-      return res.status(400).json({ error: { message: 'Type required' } });
+      return res.status(400).json({ error: { message: 'type required' } });
     }
     if (!title) {
-      return res.status(400).json({ error: { message: 'Title required' } });
+      return res.status(400).json({ error: { message: 'title required' } });
     }
     if (!description) {
       return res
         .status(400)
-        .json({ error: { message: 'Description required' } });
+        .json({ error: { message: 'description required' } });
     }
     if (description.length > 500) {
       return res

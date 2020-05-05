@@ -297,7 +297,7 @@ function makeExpectedComment(comment, user) {
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     const token = jwt.sign({ id: user.id }, secret, {
-        subject: user.name,
+        subject: user.user_name,
         algorithm: 'HS256',
       })
     return `Bearer ${token}`
