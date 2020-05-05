@@ -119,14 +119,14 @@ function makeMessagesArray() {
         {
             id: 2,
             thread_id: 1,
-            user_id: 2,
+            user_id: 1,
             content: 'test test',
             date_modified: '2020-04-22T15:07:04.118Z'
         },
         {
             id: 3,
             thread_id: 1,
-            user_id: 1,
+            user_id: 2,
             content: 'test test test',
             date_modified: '2020-04-22T15:07:04.118Z'
         }
@@ -189,13 +189,12 @@ function makeCupOfSugarFixtures() {
     return { testUsers, testPosts, testComments, testMessages, testThreads }
 }
 
-function seedCupOfSugarTables(db, users, posts = [], comments = [], messages = [], threads = []) {
+function seedCupOfSugarTables(db, users, posts = [], comments = [], threads = [], messages = []) {
     return db.transaction(async (trx) => {
       await seedUsers(trx, users)
       await seedPosts(trx, posts)
       await seedThreads(trx, threads)
       await seedMessages(trx, messages)
-    
       if(comments.length) {
         await trx.into('comments').insert(comments)
         await trx.raw(
@@ -295,7 +294,48 @@ function makeExpectedComment(comment, user) {
     }
 }
 
+function makeExpectedThread(thread, user1, user2) {
+    return {
+        id: thread.id,
+        name1: user1.name,
+        user_name1: user1.user_name,
+        zip: user1.zip,
+        user_id1: user1.user_id,
+        user_id2: user2.user_id,
+        name2: user2.name,
+        user_name2: user2.user_name,
+        date_modified: post.date_modified,
+        img_src1: user1.img_src,
+        img_alt1: user1.img_alt,
+        img_src2: user2.img_src,
+        img_alt2: user2.img_alt
+    }
+}
+
+function makeExpectedMessage(message, thread) {
+    console.log(thread)
+    return {
+        id: message.id,
+        user_id: thread.user_id1,
+        thread_id: thread.id,
+        date_modified: message.date_modified,
+        content: message.content
+    }
+}
+
+function makeExpectedMessage2(message, thread) {
+    console.log(thread)
+    return {
+        id: message.id,
+        user_id: thread.user_id2,
+        thread_id: thread.id,
+        date_modified: message.date_modified,
+        content: message.content
+    }
+}
+
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
+    console.log(user)
     const token = jwt.sign({ id: user.id }, secret, {
         subject: user.user_name,
         algorithm: 'HS256',
@@ -314,5 +354,8 @@ module.exports = {
     cleanTables,
     makeAuthHeader,
     seedCupOfSugarTables,
-    getUserForItem
+    getUserForItem,
+    makeExpectedMessage,
+    makeExpectedThread,
+    makeExpectedMessage2
 }

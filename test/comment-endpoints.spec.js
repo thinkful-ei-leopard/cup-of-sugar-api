@@ -26,7 +26,7 @@ describe('Comments Endpoints', function () {
 
   afterEach('cleanup', () => helpers.cleanTables(db));
 
-  describe.skip('Protected endpoints', () => {
+  describe('Protected endpoints', () => {
     beforeEach('Insert Comments', () => {
       return helpers.seedCupOfSugarTables(
         db,
