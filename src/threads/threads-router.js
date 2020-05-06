@@ -9,7 +9,6 @@ const jsonBodyParser = express.json()
 threadsRouter
     .route('/')
     .get(requireAuth, async (req, res, next) => {
-<<<<<<< HEAD
         try {
           const threads1 = await ThreadsService.getByUserId1(req.app.get('db'), req.user.id);
           const threads2 = await ThreadsService.getByUserId2(req.app.get('db'), req.user.id);
@@ -18,12 +17,6 @@ threadsRouter
         } catch(error) {
           next(error)
         }
-=======
-        const threads1 = await ThreadsService.getByUserId1(req.app.get('db'), req.user.id);
-        const threads2 = await ThreadsService.getByUserId2(req.app.get('db'), req.user.id);
-        const threads = threads1.concat(threads2);
-        res.status(200).json(threads);
->>>>>>> b4baf86bd3482ff3f5052199efb5a698725c02ea
       })
     .post(requireAuth, jsonBodyParser, async (req, res, next) => {
       const user_id1 = req.user.id;
