@@ -269,7 +269,8 @@ function makeExpectedPost(post, user) {
         type: post.type,
         title: post.title,
         description: post.description,
-        comments: post.comments
+        comments: post.comments,
+        resolved: post.resolved
     }
 }
 
