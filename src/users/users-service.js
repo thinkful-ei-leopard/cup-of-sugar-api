@@ -3,10 +3,10 @@ const bcrypt = require('bcryptjs');
 const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/;
 
 const UsersService = {
-  getAllUsers(db) {
+  getAllUsersUsernames(db) {
     return db
       .from('users as user')
-      .select('*');
+      .select('user_name');
   },
 
   getUsersByZip(db, zip) {

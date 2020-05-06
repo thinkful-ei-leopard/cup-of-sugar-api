@@ -21,27 +21,32 @@ usersRouter
   usersRouter
   .post('/', jsonBodyParser, async (req, res, next) => {
     const { password, username, name, email, zip, img_src, img_alt } = req.body
-
+    let usernames = await UsersService.getAllUsersUsernames(req.app.get('db'))
+    usernames.forEach(user_name => {
+      if (user_name === username) {
+        return res.status(400).send({error: {message: 'Username already taken'}})
+      }
+    })
+    if(zip.length !== 5) {
+      return res.status(400).json({
+        error: 'Zip code must be 5 digits'
+      })
+    }
+    if(name.length > 20) {
+      return res.status(400).json({
+        error: 'Name cannot exceed 20 characters'
+      })
+    }
+    if(username.length > 20) {
+      return res.status(400).json({
+        error: 'User Name cannot exceed 20 characters'
+      })
+    }
     for (const field of ['name', 'username', 'password', 'email', 'zip', 'img_alt'])
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`
         })
-      if(zip.length !== 5) {
-        return res.status(400).json({
-          error: 'Zip code must be 5 digits'
-        })
-      }
-      if(name.length > 20) {
-        return res.status(400).json({
-          error: 'Name cannot exceed 20 characters'
-        })
-      }
-      if(username.length > 20) {
-        return res.status(400).json({
-          error: 'User Name cannot exceed 20 characters'
-        })
-      }
 
     try {
       const passwordError = UsersService.validatePassword(password)
