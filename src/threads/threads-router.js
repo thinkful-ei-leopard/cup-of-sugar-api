@@ -12,9 +12,6 @@ threadsRouter
         const threads1 = await ThreadsService.getByUserId1(req.app.get('db'), req.user.id);
         const threads2 = await ThreadsService.getByUserId2(req.app.get('db'), req.user.id);
         const threads = threads1.concat(threads2);
-        if (threads.length === 0) {
-          return res.status(404).end()
-        }
         res.status(200).json(threads);
       })
     .post(requireAuth, jsonBodyParser, async (req, res, next) => {
