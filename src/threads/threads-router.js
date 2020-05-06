@@ -9,13 +9,14 @@ const jsonBodyParser = express.json()
 threadsRouter
     .route('/')
     .get(requireAuth, async (req, res, next) => {
-        const threads1 = await ThreadsService.getByUserId1(req.app.get('db'), req.user.id);
-        const threads2 = await ThreadsService.getByUserId2(req.app.get('db'), req.user.id);
-        const threads = threads1.concat(threads2);
-        if (threads.length === 0) {
-          return res.status(404).end()
+        try {
+          const threads1 = await ThreadsService.getByUserId1(req.app.get('db'), req.user.id);
+          const threads2 = await ThreadsService.getByUserId2(req.app.get('db'), req.user.id);
+          const threads = threads1.concat(threads2);
+          res.status(200).json(threads);
+        } catch(error) {
+          next(error)
         }
-        res.status(200).json(threads);
       })
     .post(requireAuth, jsonBodyParser, async (req, res, next) => {
       const user_id1 = req.user.id;
@@ -45,7 +46,7 @@ threadsRouter
           .location(path.posix.join(req.originalUrl, `${thread.id}`))
           .json(thread);
       } catch (error) {
-        next;
+        next(error);
       }
     });
 threadsRouter
@@ -63,17 +64,16 @@ threadsRouter
     }
     res.status(204).end();
   } catch(error) {
-    next;
+    next(error);
   }
 })
 .get(requireAuth, async (req, res, next) => {
-  const thread = await ThreadsService.getById(req.app.get('db'), req.params.thread_id)
-  if (!thread) {
-    return res.status(404).json({
-      error: { message: 'Thread does not exist' },
-    });
+  try{
+    const thread = await ThreadsService.getById(req.app.get('db'), req.params.thread_id)
+    res.status(200).json(thread)
+  } catch(error) {
+    next(error)
   }
-  res.status(200).json(thread)
 });
 
     module.exports = threadsRouter

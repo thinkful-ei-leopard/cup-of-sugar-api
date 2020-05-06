@@ -14,9 +14,6 @@ commentsRouter
                 req.app.get('db'), 
                 req.user.zip
             )
-            if (!comments) {
-                return res.status(404).send('No comments found')
-            }
             res
                 .status(200)
                 .json(comments)
@@ -33,11 +30,6 @@ commentsRouter
                 req.app.get('db'), 
                 req.params.post_id
             )
-            
-            if (comments.length === 0) {
-                return res.status(404).send('No comments found')
-            }
-            
             res
                 .status(200)
                 .json(comments)
@@ -96,7 +88,9 @@ commentsRouter
                 req.params.post_id
             )
 
-            res.status(204).end()
+            res
+                .status(204)
+                .end()
         } catch(error) {
             next(error)
         }

@@ -9,11 +9,12 @@ const jsonBodyParser = express.json();
 postsRouter
   .route('/')
   .get(requireAuth, async (req, res, next) => {
-    const posts = await PostsService.getPostsByZip(req.app.get('db'), req.user.zip);
-    if (!posts) {
-      res.status(404).send({ error: { message: 'No posts found' } });
+    try {
+      const posts = await PostsService.getPostsByZip(req.app.get('db'), req.user.zip);
+      res.status(200).json(posts);
+    } catch(error) {
+      next(error)
     }
-    res.status(200).json(posts);
   })
   .post(requireAuth, jsonBodyParser, async (req, res, next) => {
     const { type, title, description } = req.body;

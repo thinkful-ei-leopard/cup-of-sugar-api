@@ -9,21 +9,25 @@ const jsonBodyParser = express.json()
 messagesRouter
   .route('/')
   .get(requireAuth, async (req, res, next) => {
-    const messages = await MessagesService.getAllMessages(req.app.get('db'));
-    if (!messages) {
-        return res.status(400).send({error: {message: 'No messages found'}})
+    try {
+      const messages = await MessagesService.getAllMessages(req.app.get('db'));
+      res
+        .status(200)
+        .json(messages);
+    } catch (error) {
+      next(error)
     }
-    res.status(200).json(messages);
   })
 
 messagesRouter
     .route('/:thread_id')
     .get(requireAuth, async (req, res, next) => {
-        const messages = await MessagesService.getByThread(req.app.get('db'), req.params.thread_id);
-        if (messages.length === 0) {
-            return res.status(404).send({error: {message: 'No messages found'}})
+        try {
+          const messages = await MessagesService.getByThread(req.app.get('db'), req.params.thread_id);
+          res.status(200).json(messages);
+        } catch(error) {
+          next(error)
         }
-        res.status(200).json(messages);
       })
     .post(requireAuth, jsonBodyParser, async (req, res, next) => {
       const user_id = req.user.id;
@@ -47,7 +51,7 @@ messagesRouter
           .location(path.posix.join(req.originalUrl, `${message.id}`))
           .json(message);
       } catch (error) {
-        next;
+        next(error);
       }
     })
 messagesRouter
@@ -65,7 +69,7 @@ messagesRouter
         }
         res.status(204).end();
       } catch(error) {
-        next;
+        next(error);
       }
     });
 

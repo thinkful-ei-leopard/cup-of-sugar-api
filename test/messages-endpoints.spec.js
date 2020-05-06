@@ -136,19 +136,19 @@ describe('Messages Endpoints', () => {
   describe('GET /api/messages/:thread_id', () => {
     context('Given no messages', () => {
       before('insert users and threads', () => {
-        return helpers.seedCupOfSugarTables(
+        return helpers.seedUsers(
           db,
-          testUsers,
-          testPosts,
-          testComments,
-          testThreads
-        );
+          testUsers
+        )
       });
-      it('responds with 404 not found', () => {
+      it('responds with 200 and an empty array', () => {
         return supertest(app)
           .get('/api/messages/1')
           .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
-          .expect(404);
+          .expect(200)
+          .expect(res => {
+            expect(res.body).to.eql([]);
+          });
       });
     });
     context('Given messages exist', () => {

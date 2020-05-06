@@ -135,11 +135,14 @@ describe('Thread Endpoints', () => {
           testComments,
         );
       });
-      it('responds with 404 not found', () => {
+      it('responds with 200 and an empty array', () => {
         return supertest(app)
           .get('/api/threads')
           .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
-          .expect(404);
+          .expect(200)
+          .expect(res => {
+            expect(res.body).to.eql([]);
+          });
       });
     });
     context('Given threads exist', () => {
@@ -201,18 +204,16 @@ describe('Thread Endpoints', () => {
   describe('GET /api/threads/thread_id', () => {
     context('Given no threads', () => {
       before('insert users', () => {
-        return helpers.seedCupOfSugarTables(
+        return helpers.seedUsers(
           db,
-          testUsers,
-          testPosts,
-          testComments,
-        );
+          testUsers
+        )
       });
-      it('responds with 404 not found', () => {
+      it('responds with 200 and an empty array', () => {
         return supertest(app)
           .get('/api/threads/1')
           .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
-          .expect(404);
+          .expect(200);
       });
     });
     context('Given thread exists', () => {
