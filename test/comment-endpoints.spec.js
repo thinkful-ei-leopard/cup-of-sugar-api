@@ -33,8 +33,8 @@ describe('Comments Endpoints', function () {
         testUsers,
         testPosts,
         testComments,
-        testMessages,
-        testThreads
+        testThreads,
+        testMessages
       );
     });
     const protectedEndpoints = [
@@ -73,7 +73,7 @@ describe('Comments Endpoints', function () {
             .expect(401, { error: 'Unauthorized request' });
         });
         it('responds 401 \'Unauthorized request\' when invalid sub in payload', () => {
-          const invalidUser = { name: 'user-not-existy', id: 1 };
+          const invalidUser = { user_name: 'user-not-existy', id: 1 };
           return endpoint.method(endpoint.path)
             .set('Authorization', helpers.makeAuthHeader(invalidUser))
             .expect(401, { error: 'Unauthorized request' });
@@ -88,9 +88,9 @@ describe('Comments Endpoints', function () {
           db,
           testUsers,
           testPosts,
-          [],
-          testMessages,
-          testThreads
+          testComments,
+          testThreads,
+          testMessages
         );
       });
       it('Responds with 400 Bad Request', () => {
@@ -114,15 +114,13 @@ describe('Comments Endpoints', function () {
           testUsers,
           testPosts,
           testComments,
-          testPosts
+          testThreads,
+          testMessages
         );
       });
       it('responds with 201 and new comment', () => {
         let newComment = {
-          id: 1,
-          user_id: 1,
-          post_id: 1,
-          content: 'Oooweee can do!'
+          content: 'Oooweee can do!',
         };
         return supertest(app)
           .post('/api/comments/1')
@@ -142,11 +140,10 @@ describe('Comments Endpoints', function () {
   describe('GET /api/comments/:post_id', () => {
     context('Given no comments', () => {
       before('insert users and posts', () => {
-        return helpers.seedCupOfSugarTables(
+        return helpers.seedUsers(
           db,
-          testUsers,
-          testPosts
-        );
+          testUsers
+        )
       });
       it('responds with 404 not found', () => {
         return supertest(app)
@@ -163,7 +160,8 @@ describe('Comments Endpoints', function () {
           testUsers,
           testPosts,
           testComments,
-          testPosts
+          testThreads,
+          testMessages
         );
       });
       it('responds with 200 and test comment', () => {
@@ -179,7 +177,7 @@ describe('Comments Endpoints', function () {
       });
     });
   });
-  describe('DELETE /api/comments/comment/:comment_id', () => {
+  describe('DELETE /api/comments//:post_id/:comment_id', () => {
     context('Given no comment', () => {
       before('insert users', () => {
         return helpers.seedUsers(
@@ -189,7 +187,7 @@ describe('Comments Endpoints', function () {
       });
       it('responds with 404 not found', () => {
         return supertest(app)
-          .delete('/api/comments/comment/1')
+          .delete('/api/comments/1/1')
           .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
           .expect(404);
       });
@@ -200,12 +198,14 @@ describe('Comments Endpoints', function () {
           db,
           testUsers,
           testPosts,
-          testComments
+          testComments,
+          testThreads,
+          testMessages
         );
       });
       it('responds with 204', () => {
         return supertest(app)
-          .delete(`/api/comments/comment/${testComments[0].id}`)
+          .delete(`/api/comments/1/${testComments[0].id}`)
           .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
           .expect(204);
       });
@@ -232,7 +232,9 @@ describe('Comments Endpoints', function () {
             db,
             testUsers,
             testPosts,
-            testComments
+            testComments,
+            testThreads,
+            testMessages
           );
         });
         it('responds with 200 and all of the comments from user zip code', () => {
