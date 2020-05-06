@@ -3,7 +3,7 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 require('dotenv').config();
 
-describe.only('Messages Endpoints', () => {
+describe('Messages Endpoints', () => {
   let db;
   const {
     testUsers,
