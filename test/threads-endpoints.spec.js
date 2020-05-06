@@ -126,6 +126,7 @@ describe('Thread Endpoints', () => {
     });
   });
   describe('GET /api/threads', () => {
+<<<<<<< HEAD
     context('Given no threads', () => {
       before('insert users', () => {
         return helpers.seedCupOfSugarTables(
@@ -145,6 +146,8 @@ describe('Thread Endpoints', () => {
           });
       });
     });
+=======
+>>>>>>> b4baf86bd3482ff3f5052199efb5a698725c02ea
     context('Given threads exist', () => {
       before('cleanup', () => helpers.cleanTables(db));
       before('insert all', () => {
