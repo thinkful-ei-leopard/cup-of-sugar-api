@@ -3,7 +3,7 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 require('dotenv').config();
 
-describe.only('Posts Endpoints', function () {
+describe('Posts Endpoints', function () {
   let db;
   const {
     testUsers,
@@ -26,15 +26,15 @@ describe.only('Posts Endpoints', function () {
 
   afterEach('cleanup', () => helpers.cleanTables(db));
 
-  describe.skip('Protected endpoints', () => {
+  describe('Protected endpoints', () => {
     beforeEach('Insert Comments', () => {
       return helpers.seedCupOfSugarTables(
         db,
         testUsers,
         testPosts,
         testComments,
-        testMessages,
-        testThreads
+        testThreads,
+        testMessages
       );
     });
     const protectedEndpoints = [
@@ -73,7 +73,7 @@ describe.only('Posts Endpoints', function () {
             .expect(401, { error: 'Unauthorized request' });
         });
         it('responds 401 \'Unauthorized request\' when invalid sub in payload', () => {
-          const invalidUser = { name: 'user-not-existy', id: 1 };
+          const invalidUser = { user_name: 'user-not-existy', id: 1 };
           return endpoint.method(endpoint.path)
             .set('Authorization', helpers.makeAuthHeader(invalidUser))
             .expect(401, { error: 'Unauthorized request' });
@@ -81,7 +81,7 @@ describe.only('Posts Endpoints', function () {
       });
     });
   });
-  describe.skip('DELETE /api/posts/:post_id', () => {
+  describe('DELETE /api/posts/:post_id', () => {
     context('Given no post', () => {
       before('insert users', () => {
         return helpers.seedUsers(
@@ -103,8 +103,8 @@ describe.only('Posts Endpoints', function () {
           testUsers,
           testPosts,
           testComments,
-          testMessages,
-          testThreads
+          testThreads,
+          testMessages
         );
       });
       it('responds with 204', () => {
@@ -115,7 +115,7 @@ describe.only('Posts Endpoints', function () {
       });
     });
   });
-  describe.skip('POST /api/posts', () => {
+  describe('POST /api/posts', () => {
     beforeEach('insert users', () => {
       return helpers.seedUsers(
         db,
@@ -170,7 +170,9 @@ describe.only('Posts Endpoints', function () {
             db,
             testUsers,
             testPosts,
-            testComments
+            testComments,
+            testThreads,
+            testMessages
           );
         });
         it('responds with 200 and all of the posts by zip', () => {
