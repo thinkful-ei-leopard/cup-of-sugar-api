@@ -12,6 +12,9 @@ threadsRouter
         const threads1 = await ThreadsService.getByUserId1(req.app.get('db'), req.user.id);
         const threads2 = await ThreadsService.getByUserId2(req.app.get('db'), req.user.id);
         const threads = threads1.concat(threads2);
+        if (threads.length === 0) {
+          return res.status(404).end()
+        }
         res.status(200).json(threads);
       })
     .post(requireAuth, jsonBodyParser, async (req, res, next) => {
@@ -65,7 +68,6 @@ threadsRouter
 })
 .get(requireAuth, async (req, res, next) => {
   const thread = await ThreadsService.getById(req.app.get('db'), req.params.thread_id)
-  console.log(thread)
   if (!thread) {
     return res.status(404).json({
       error: { message: 'Thread does not exist' },

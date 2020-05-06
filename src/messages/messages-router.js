@@ -20,8 +20,8 @@ messagesRouter
     .route('/:thread_id')
     .get(requireAuth, async (req, res, next) => {
         const messages = await MessagesService.getByThread(req.app.get('db'), req.params.thread_id);
-        if (!messages) {
-            return res.status(400).send({error: {message: 'No messages found'}})
+        if (messages.length === 0) {
+            return res.status(404).send({error: {message: 'No messages found'}})
         }
         res.status(200).json(messages);
       })
@@ -29,18 +29,20 @@ messagesRouter
       const user_id = req.user.id;
       const thread_id = parseInt(req.params.thread_id);
       const content = req.body.newMessage;
+      if(!content) {
+        return res.status(400).send({error: {message: 'No message content'}})
+      }
       const newMessage = {
         user_id,
         thread_id,
         content
       };
-      console.log(newMessage)
+      console.log('newMessage', newMessage)
       try {
         const message = await MessagesService.insertMessage(
           req.app.get('db'), 
           newMessage
         );
-        console.log('message', message)
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `${message.id}`))

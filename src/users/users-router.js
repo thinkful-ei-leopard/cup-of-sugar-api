@@ -87,7 +87,6 @@ usersRouter
 usersRouter
   .route('/:user_id')
   .get(requireAuth, async (req, res, next) => {
-    console.log(req.user)
       const user = await UsersService.getById(req.app.get('db'), req.params.user_id)
           return res
               .status(200)

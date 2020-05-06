@@ -3,7 +3,7 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 require('dotenv').config();
 
-describe.only('Messages Endpoints', () => {
+describe('Messages Endpoints', () => {
   let db;
   const {
     testUsers,
@@ -26,8 +26,6 @@ describe.only('Messages Endpoints', () => {
   before('cleanup', () => helpers.cleanTables(db));
 
   afterEach('cleanup', () => helpers.cleanTables(db));
-
-  // refactor below
 
   describe('Protected endpoints', () => {
     beforeEach('Insert Messages', () => {
@@ -57,8 +55,8 @@ describe.only('Messages Endpoints', () => {
         method: supertest(app).post,
       },
       {
-        name: 'DELETE /api/message/:message_id',
-        path: '/api/message/1',
+        name: 'DELETE /api/messages/message/:message_id',
+        path: '/api/messages/message/1',
         method: supertest(app).delete,
       }
     ];
@@ -86,21 +84,17 @@ describe.only('Messages Endpoints', () => {
   });
   describe('POST /api/messages/:thread_id', () => {
     context('Given no message content', () => {
-      beforeEach('Insert messages', () => {
+      beforeEach('Seed tables', () => {
         return helpers.seedCupOfSugarTables(
           db,
           testUsers,
           testPosts,
           testComments,
           testThreads,
-          testMessages
         );
       });
       it('Responds with 400 Bad Request', () => {
         const contentlessMessage = {
-          id: 10,
-          user_id: 1,
-          thread_id: 1,
           content: null
         };
         return supertest(app) 
@@ -111,23 +105,18 @@ describe.only('Messages Endpoints', () => {
       });
     });
     context('given valid message content', () => {
-      beforeEach('insert messages', () => {
+      beforeEach('Seed tables', () => {
         return helpers.seedCupOfSugarTables(
           db,
           testUsers,
           testPosts,
           testComments,
-          testPosts,
           testThreads,
-          testMessages
         );
       });
       it('responds with 201 and new message', () => {
         let newMessage = {
-          id: 4,
-          user_id: 1,
-          thread_id: 1,
-          content: 'Oooweee can do!'
+          newMessage: 'Oooweee can do!'
         };
         return supertest(app)
           .post('/api/messages/1')
@@ -136,7 +125,7 @@ describe.only('Messages Endpoints', () => {
           .expect(201)
           .expect(res => {
             expect(res.body).to.have.property('id');
-            expect(res.body.content).to.eql(newMessage.content);
+            expect(res.body.content).to.eql(newMessage.newMessage);
             expect(res.body).to.have.property('thread_id');
             expect(res.body).to.have.property('date_modified');
             expect(res.body).to.have.property('user_id');
@@ -178,8 +167,9 @@ describe.only('Messages Endpoints', () => {
       it('responds with 200 and test messages', () => {
         const thread = testThreads.find(thread => thread.id === testMessages[0].thread_id);
         const expectedMessage1 = helpers.makeExpectedMessage(testMessages[0], thread);
-        const expectedMessage2 = helpers.makeExpectedMessage2(testMessages[2], thread);
-        const expectedArr = [expectedMessage1, expectedMessage2];
+        const expectedMessage2 = helpers.makeExpectedMessage(testMessages[1], thread);
+        const expectedMessage3 = helpers.makeExpectedMessage2(testMessages[2], thread);
+        const expectedArr = [expectedMessage1, expectedMessage2, expectedMessage3];
         return supertest(app)
           .get(`/api/messages/${testMessages[0].thread_id}`)
           .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))

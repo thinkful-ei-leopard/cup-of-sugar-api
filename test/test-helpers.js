@@ -172,7 +172,7 @@ function makeThreadsArray() {
             img_src2: 'https://test3.jpg',
             name1: 'test2_name',
             name2: 'test3_name',
-            user_id1: 1,
+            user_id1: 2,
             user_id2: 3,
             user_name1: 'test2',
             user_name2: 'test3'
@@ -193,13 +193,20 @@ function seedCupOfSugarTables(db, users, posts = [], comments = [], threads = []
     return db.transaction(async (trx) => {
       await seedUsers(trx, users)
       await seedPosts(trx, posts)
+      if(threads.length > 0) {
       await seedThreads(trx, threads)
-      await seedMessages(trx, messages)
-      if(comments.length) {
+      }
+      if(comments.length > 0) {
         await trx.into('comments').insert(comments)
         await trx.raw(
           `SELECT setval('comments_id_seq', ?)`,
           [comments[comments.length - 1].id],
+      )}
+      if(messages.length > 0) {
+        await trx.into('messages').insert(messages)
+        await trx.raw(
+          `SELECT setval('messages_id_seq', ?)`,
+          [messages[messages.length - 1].id],
       )}
     })
 }
@@ -210,8 +217,8 @@ function cleanTables(db) {
             users,
             posts,
             comments,
-            messages,
-            threads
+            threads,
+            messages
             RESTART IDENTITY CASCADE`
     )
 }
@@ -239,16 +246,6 @@ function seedUsers(db, users) {
         //   [users[users.length - 1].id],
         // )
       })
-}
-
-function seedMessages(db, messages) {
-    return db.into('messages').insert(messages)
-      .then(() =>
-        db.raw(
-          `SELECT setval('messages_id_seq', ?)`,
-          [messages[messages.length - 1].id],
-        )
-      )
 }
 
 function seedThreads(db, threads) {
@@ -294,26 +291,24 @@ function makeExpectedComment(comment, user) {
     }
 }
 
-function makeExpectedThread(thread, user1, user2) {
+function makeExpectedThread(thread) {
     return {
         id: thread.id,
-        name1: user1.name,
-        user_name1: user1.user_name,
-        zip: user1.zip,
-        user_id1: user1.user_id,
-        user_id2: user2.user_id,
-        name2: user2.name,
-        user_name2: user2.user_name,
-        date_modified: post.date_modified,
-        img_src1: user1.img_src,
-        img_alt1: user1.img_alt,
-        img_src2: user2.img_src,
-        img_alt2: user2.img_alt
+        name1: thread.name1,
+        user_name1: thread.user_name1,
+        user_id1: thread.user_id1,
+        user_id2: thread.user_id2,
+        name2: thread.name2,
+        user_name2: thread.user_name2,
+        date_modified: thread.date_modified,
+        img_src1: thread.img_src1,
+        img_alt1: thread.img_alt1,
+        img_src2: thread.img_src2,
+        img_alt2: thread.img_alt2
     }
 }
 
 function makeExpectedMessage(message, thread) {
-    console.log(thread)
     return {
         id: message.id,
         user_id: thread.user_id1,
@@ -324,7 +319,6 @@ function makeExpectedMessage(message, thread) {
 }
 
 function makeExpectedMessage2(message, thread) {
-    console.log(thread)
     return {
         id: message.id,
         user_id: thread.user_id2,
@@ -335,7 +329,6 @@ function makeExpectedMessage2(message, thread) {
 }
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
-    console.log(user)
     const token = jwt.sign({ id: user.id }, secret, {
         subject: user.user_name,
         algorithm: 'HS256',

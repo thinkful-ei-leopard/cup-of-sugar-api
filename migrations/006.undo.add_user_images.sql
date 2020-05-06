@@ -1,3 +1,3 @@
 ALTER TABLE users 
-  DROP COLUMN img_src TEXT,
-  DROP COLUMN img_alt TEXT NOT NULL;
+  DROP COLUMN img_src,
+  DROP COLUMN img_alt;
