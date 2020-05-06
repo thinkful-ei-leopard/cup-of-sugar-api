@@ -10,15 +10,19 @@ commentsRouter
     .route('/')
     .get(requireAuth, async (req, res, next) => {
         try {
-            const comments = await CommentsService.getCommentsByZip(req.app.get('db'), req.user.zip)
+            const comments = await CommentsService.getCommentsByZip(
+                req.app.get('db'), 
+                req.user.zip
+            )
             if (!comments) {
                 return res.status(404).send('No comments found')
             }
             res
                 .status(200)
                 .json(comments)
+        } catch(error) {
+            next(error)
         }
-        catch{next}
     })
 
 commentsRouter
@@ -68,8 +72,7 @@ commentsRouter
                 res
                     .status(201)
                     .json(comment)
-        }
-        catch(error) {
+        } catch(error) {
             next(error)
         }
     })

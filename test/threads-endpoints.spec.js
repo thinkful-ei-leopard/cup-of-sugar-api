@@ -3,7 +3,7 @@ const app = require('../src/app');
 const helpers = require('./test-helpers');
 require('dotenv').config();
 
-describe.only('Thread Endpoints', () => {
+describe('Thread Endpoints', () => {
   let db;
   const {
     testUsers,
