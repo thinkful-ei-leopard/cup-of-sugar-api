@@ -20,6 +20,7 @@ describe('Comments Endpoints', function () {
     });
     app.set('db', db);
   });
+
   after('disconnect from db', () => db.destroy());
 
   before('cleanup', () => helpers.cleanTables(db));
@@ -145,11 +146,14 @@ describe('Comments Endpoints', function () {
           testUsers
         )
       });
-      it('responds with 404 not found', () => {
+      it('responds with 200 and an empty array', () => {
         return supertest(app)
           .get('/api/comments/1')
           .set('Authorization', helpers.makeAuthHeader(testUsers[0], process.env.JWT_SECRET))
-          .expect(404);
+          .expect(200)
+          .expect(res => {
+            expect(res.body).to.eql([]);
+          });
       });
     });
     context('Given comments exist', () => {
