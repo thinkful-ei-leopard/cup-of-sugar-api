@@ -37,7 +37,6 @@ messagesRouter
         thread_id,
         content
       };
-      console.log('newMessage', newMessage)
       try {
         const message = await MessagesService.insertMessage(
           req.app.get('db'), 
