@@ -2,16 +2,31 @@ const express = require('express');
 const PostsService = require('./posts-service');
 const { requireAuth } = require('../middleware/jwt-auth');
 const path = require('path');
+const xss = require('xss')
 
 const postsRouter = express.Router();
 const jsonBodyParser = express.json();
+
+const serializePost = post => ({
+  id: post.id,
+  name: post.name,
+  user_name: post.user_name,
+  zip: post.zip,
+  user_id: post.user_id,
+  date_modified: post.date_modified,
+  type: xss(post.type),
+  title: xss(post.title),
+  description: xss(post.description),
+  comments: post.comments,
+  resolved: post.resolved
+})
 
 postsRouter
   .route('/')
   .get(requireAuth, async (req, res, next) => {
     try {
       const posts = await PostsService.getPostsByZip(req.app.get('db'), req.user.zip);
-      res.status(200).json(posts);
+      res.status(200).json(posts.map(serializePost));
     } catch(error) {
       next(error)
     }
@@ -56,7 +71,7 @@ postsRouter
       res
         .status(201)
         .location(path.posix.join(req.originalUrl, `${post.id}`))
-        .json(post);
+        .json(serializePost(post));
     } catch (error) {
       next(error)
     }
@@ -96,7 +111,7 @@ postsRouter
         description,
         resolved
       )
-      res.json(editedPost)
+      res.json(serializePost(editedPost))
     } catch(error) {
       next(error)
     }

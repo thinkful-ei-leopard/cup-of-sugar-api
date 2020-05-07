@@ -2,9 +2,21 @@ const express = require('express')
 const CommentsService = require('./comments-service')
 const { requireAuth } = require('../middleware/jwt-auth')
 const path = require('path')
+const xss = require('xss')
 
 const commentsRouter = express.Router()
 const jsonBodyParser = express.json()
+
+const serializeComment = comment => ({
+    id: comment.id,
+    name: comment.name,
+    user_name: comment.user_name,
+    zip: comment.zip,
+    user_id: comment.user_id,
+    post_id: comment.post_id,
+    date_modified: comment.date_modified,
+    content: xss(comment.content)
+})
 
 commentsRouter
     .route('/')
@@ -16,7 +28,7 @@ commentsRouter
             )
             res
                 .status(200)
-                .json(comments)
+                .json(comments.map(serializeComment))
         } catch(error) {
             next(error)
         }
@@ -32,7 +44,7 @@ commentsRouter
             )
             res
                 .status(200)
-                .json(comments)
+                .json(comments.map(serializeComment))
 
         } catch(error) {
             next(error)
@@ -63,7 +75,7 @@ commentsRouter
 
                 res
                     .status(201)
-                    .json(comment)
+                    .json(serializeComment(comment))
         } catch(error) {
             next(error)
         }
