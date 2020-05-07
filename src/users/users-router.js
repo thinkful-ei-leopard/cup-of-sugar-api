@@ -11,7 +11,7 @@ const serializeUser = user => ({
   id: user.id,
   name: xss(user.name),
   user_name: xss(user.user_name),
-  zip: 999,
+  zip: user.zip,
   img_src: xss(user.img_src),
   img_alt: xss(user.img_alt)
 })
