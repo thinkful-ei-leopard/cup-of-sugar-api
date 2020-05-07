@@ -2,9 +2,18 @@ const express = require('express')
 const MessagesService = require('./messages-service')
 const { requireAuth } = require('../middleware/jwt-auth')
 const path = require('path')
+const xss = require('xss')
 
 const messagesRouter = express.Router()
 const jsonBodyParser = express.json()
+
+const serialzeMessage = message => ({
+  id: message.id,
+  user_id: message.user_id,
+  thread_id: message.thread_id,
+  date_modified: message.date_modified,
+  content: xss(message.content)
+})
 
 messagesRouter
   .route('/')
@@ -13,7 +22,7 @@ messagesRouter
       const messages = await MessagesService.getAllMessages(req.app.get('db'));
       res
         .status(200)
-        .json(messages);
+        .json(messages.map(serialzeMessage));
     } catch (error) {
       next(error)
     }
@@ -24,7 +33,7 @@ messagesRouter
     .get(requireAuth, async (req, res, next) => {
         try {
           const messages = await MessagesService.getByThread(req.app.get('db'), req.params.thread_id);
-          res.status(200).json(messages);
+          res.status(200).json(messages.map(serialzeMessage));
         } catch(error) {
           next(error)
         }
@@ -49,7 +58,7 @@ messagesRouter
         res
           .status(201)
           .location(path.posix.join(req.originalUrl, `${message.id}`))
-          .json(message);
+          .json(serialzeMessage(message));
       } catch (error) {
         next(error);
       }

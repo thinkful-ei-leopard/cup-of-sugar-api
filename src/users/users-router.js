@@ -2,9 +2,19 @@ const express = require('express')
 const UsersService = require('./users-service')
 const { requireAuth } = require('../middleware/jwt-auth')
 const path = require('path')
+const xss = require('xss')
 
 const usersRouter = express.Router()
 const jsonBodyParser = express.json()
+
+const serializeUser = user => ({
+  id: user.id,
+  name: xss(user.name),
+  user_name: xss(user.user_name),
+  zip: 999,
+  img_src: xss(user.img_src),
+  img_alt: xss(user.img_alt)
+})
 
 usersRouter
     .route('/zip/:zip')
@@ -13,7 +23,7 @@ usersRouter
         const usersInZip = await UsersService.getUsersByZip(req.app.get('db'), req.params.zip)
             return res
                 .status(200)
-                .json(usersInZip)
+                .json(usersInZip.map(serializeUser))
         }
         catch {next}
     })
@@ -95,7 +105,7 @@ usersRouter
       const user = await UsersService.getById(req.app.get('db'), req.params.user_id)
           return res
               .status(200)
-              .json(user)
+              .json(serializeUser(user))
   })
 
 module.exports = usersRouter;
