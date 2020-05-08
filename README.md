@@ -15,12 +15,12 @@ Run the tests `npm test`
 
 ## Built with
 
-React
-SCSS
-Node.js
-Express
-PostgreSQL
-Mocha/Chai
+React  
+SCSS  
+Node.js  
+Express  
+PostgreSQL  
+Mocha/Chai  
 Heroku
 
 ## Authors
