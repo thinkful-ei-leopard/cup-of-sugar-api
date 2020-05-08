@@ -7,15 +7,11 @@ Link to client repo: https://github.com/thinkful-ei-leopard/cup-of-sugar-client
 
 ## Endpoints
 
-Users Endpoint ('/users'): Contains methods for getting and posting users.
-
-Posts Endpoint ('/posts'): Contains methods for getting, posting, updating and deleting posts.
-
-Comments Endpoint ('/comments'): Contains methods for getting, posting, and deleting comments.
-
-Threads Endpoint ('/threads'): Contains methods for getting, posting, and deleting threads.
-
-Messages Endpoint ('/messages'): Contains methods for getting and posting messages.
+Users Endpoint ('/users'): Contains methods for getting and posting users.  
+Posts Endpoint ('/posts'): Contains methods for getting, posting, updating and deleting posts.  
+Comments Endpoint ('/comments'): Contains methods for getting, posting, and deleting comments.  
+Threads Endpoint ('/threads'): Contains methods for getting, posting, and deleting threads.  
+Messages Endpoint ('/messages'): Contains methods for getting and posting messages.  
 
 
 ## Scripts
