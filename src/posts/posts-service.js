@@ -11,7 +11,7 @@ const PostsService = {
       .from('users as user')
       .where('user.zip', zip)
       .innerJoin('posts', 'posts.user_id', '=', 'user.id')
-      .select('posts.id', 'user.name', 'user.user_name', 'user.zip', 'posts.user_id', 'posts.date_modified', 'posts.type', 'posts.title', 'posts.description', 'posts.comments', 'posts.resolved');
+      .select('posts.id', 'user.name', 'user.user_name', 'user.zip', 'posts.user_id', 'posts.date_modified', 'posts.type', 'posts.title', 'posts.description', 'posts.comments', 'posts.resolved', 'user.img_src');
   },
 
   getById(db, id) {

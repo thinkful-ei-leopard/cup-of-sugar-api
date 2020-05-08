@@ -18,7 +18,8 @@ const serializePost = post => ({
   title: xss(post.title),
   description: xss(post.description),
   comments: post.comments,
-  resolved: post.resolved
+  resolved: post.resolved,
+  img_src: post.img_src
 })
 
 postsRouter
