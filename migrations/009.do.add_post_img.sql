@@ -1,2 +1,0 @@
-ALTER TABLE posts 
-  ADD COLUMN post_img REFERENCES users(img_src) ON DELETE CASCADE;
